@@ -1,0 +1,38 @@
+{
+  "author": {
+    "email": "aryaemami59@yahoo.com",
+    "name": "Arya Emami",
+    "url": "https://github.com/aryaemami59"
+  },
+  "description": "view and compare the difference between multiple build outputs",
+  "devDependencies": {
+    "@aryaemami59/eslint-config": "^0.0.5",
+    "@aryaemami59/prettier-config": "^0.0.5",
+    "@aryaemami59/tsconfig": "^0.0.5",
+    "@aryaemami59/vitest-config": "^0.0.5",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "jiti": "^2.6.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.12"
+  },
+  "license": "MIT",
+  "name": "diff-build-output",
+  "packageManager": "yarn@4.11.0",
+  "private": true,
+  "scripts": {
+    "build": "node src/index.ts",
+    "clean": "rimraf --verbose diffs/",
+    "format": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --write $INIT_CWD",
+    "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
+    "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",
+    "lint-fix": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern --fix $INIT_CWD",
+    "test": "vitest --run --config=$INIT_CWD/vitest.config.mts",
+    "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "version": "0.0.1"
+}

@@ -10,17 +10,17 @@
     "@aryaemami59/prettier-config": "^0.0.5",
     "@aryaemami59/tsconfig": "^0.0.5",
     "@aryaemami59/vitest-config": "^0.0.5",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.0.0",
     "eslint": "^9.39.1",
     "jiti": "^2.6.1",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.4",
     "rimraf": "^6.1.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.15"
   },
   "license": "MIT",
   "name": "diff-build-output",
-  "packageManager": "yarn@4.11.0",
+  "packageManager": "yarn@4.12.0",
   "private": true,
   "scripts": {
     "build": "node src/index.ts",

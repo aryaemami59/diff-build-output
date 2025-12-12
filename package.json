@@ -10,7 +10,7 @@
     "@aryaemami59/prettier-config": "^0.0.5",
     "@aryaemami59/tsconfig": "^0.0.5",
     "@aryaemami59/vitest-config": "^0.0.5",
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.0.1",
     "eslint": "^9.39.1",
     "jiti": "^2.6.1",
     "prettier": "^3.7.4",

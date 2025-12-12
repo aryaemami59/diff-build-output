@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process'
 import { createWriteStream } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
+import { styleText } from 'node:util'
 
 const ROOT_DIRECTORY = path.join(import.meta.dirname, '..')
 
@@ -49,8 +50,8 @@ async function main() {
         [
           path.relative(oldOutputPath, oldOutputFilePath),
           {
-            oldContent: oldOutputFilePath,
-            newContent: path.join(
+            oldOutputFileAbsolutePath: oldOutputFilePath,
+            newOutputFileAbsolutePath: path.join(
               newOutputPath,
               path.relative(oldOutputPath, oldOutputFilePath),
             ),
@@ -62,7 +63,7 @@ async function main() {
   const diffsMap = Object.fromEntries(
     await Promise.all(
       Object.entries(contentsMap).map(async ([entryFilePath, value]) => {
-        const markdownFileBanner = `<details><summary>\n\n# \`${path.posix.join(...entryFilePath.split(path.sep))}\` Summary\n\n</summary>\n\n\`\`\`diff\n`
+        const markdownFileBanner = `<details><summary>\n\n**# \`${path.posix.join(...entryFilePath.split(path.sep))}\` Summary**\n\n</summary>\n\n\`\`\`diff\n`
         const markdownFileFooter = '```\n\n</details>\n'
 
         const filePath = path.join(diffsFolder, entryFilePath)
@@ -75,6 +76,8 @@ async function main() {
         })
 
         writeStream.write(markdownFileBanner)
+
+        const { oldOutputFileAbsolutePath, newOutputFileAbsolutePath } = value
 
         /**
          * ## **Diff options used:**
@@ -94,16 +97,22 @@ async function main() {
         const diff = spawn(
           'diff',
           [
-            '-udwBbZaE',
+            '--unified=1000000',
+            '-dwBbZaE',
             '--suppress-blank-empty',
             '--suppress-common-lines',
             '--strip-trailing-cr',
+            '--minimal',
             path.posix.join(
               ...path.join(oldOutputPath, entryFilePath).split(path.sep),
             ),
+            '--label',
+            `\`tsup\` ${entryFilePath}`,
             path.posix.join(
               ...path.join(newOutputPath, entryFilePath).split(path.sep),
             ),
+            '--label',
+            `\`tsdown\` ${entryFilePath}`,
           ],
           { stdio: 'pipe' },
         )
@@ -132,6 +141,46 @@ async function main() {
           writeStream.on('finish', resolve)
           writeStream.on('error', reject)
         })
+
+        const newOutputFileAbsolutePosixPath = path.posix.join(
+          ...newOutputFileAbsolutePath.split(path.sep),
+        )
+
+        if (
+          !(
+            oldOutputFileAbsolutePath.endsWith('.production.min.cjs') ||
+            oldOutputFileAbsolutePath.endsWith('.development.cjs') ||
+            oldOutputFileAbsolutePath.endsWith('.browser.mjs') ||
+            oldOutputFileAbsolutePath.endsWith('.legacy-esm.js') ||
+            oldOutputFileAbsolutePath.endsWith('index.d.ts') ||
+            oldOutputFileAbsolutePath.endsWith('uncheckedindexed.ts') ||
+            oldOutputFileAbsolutePath.endsWith('index.js')
+          )
+        ) {
+          const vSCodeDiff = spawn(
+            'code',
+            [
+              '-d',
+              path.posix.join(...oldOutputFileAbsolutePath.split(path.sep)),
+              newOutputFileAbsolutePosixPath,
+            ],
+            { stdio: 'inherit', shell: 'bash' },
+          )
+        }
+
+        if (newOutputFileAbsolutePath.endsWith('.d.mts')) {
+          const newFileContent = await fs.readFile(newOutputFileAbsolutePath, {
+            encoding: 'utf-8',
+          })
+
+          const hasDuplicateSymbols = newFileContent.match(/\w+\$1\b/g)
+
+          if (hasDuplicateSymbols) {
+            console.error(
+              `\nFound duplicated symbols:\n${styleText(['bold', 'blue', 'doubleunderline'], hasDuplicateSymbols.map((e, index) => `${(index + 1).toString()}. ${e}`).join('\n'))}\nin entry:\n${styleText(['underline', 'redBright', 'italic', 'bold'], newOutputFileAbsolutePosixPath)}`,
+            )
+          }
+        }
 
         return [entryFilePath, value] as const
       }),

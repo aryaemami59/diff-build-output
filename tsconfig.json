@@ -1,9 +1,12 @@
 {
   "extends": "@aryaemami59/tsconfig/node-next/with-js",
   "compilerOptions": {
+    "lib": ["ESNext"],
+    "libReplacement": false,
     "noEmit": true,
     "outDir": "./dist",
-    "rootDir": "./"
+    "rootDir": "./",
+    "types": ["node"]
   },
   "exclude": ["dist", "**/dist/"],
   "include": ["**/*.*"]

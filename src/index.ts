@@ -1,8 +1,11 @@
+import { createTwoFilesPatch } from 'diff'
 import { spawn } from 'node:child_process'
 import { createWriteStream } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import { styleText } from 'node:util'
+import type { Options } from 'prettier'
+import { format, getFileInfo } from 'prettier'
 
 const ROOT_DIRECTORY = path.join(import.meta.dirname, '..')
 
@@ -63,7 +66,7 @@ async function main() {
   const diffsMap = Object.fromEntries(
     await Promise.all(
       Object.entries(contentsMap).map(async ([entryFilePath, value]) => {
-        const markdownFileBanner = `<details><summary>\n\n**# \`${path.posix.join(...entryFilePath.split(path.sep))}\` Summary**\n\n</summary>\n\n\`\`\`diff\n`
+        const markdownFileBanner = `<details><summary>\n\n# **\`${path.posix.join(...entryFilePath.split(path.sep))}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
         const markdownFileFooter = '```\n\n</details>\n'
 
         const filePath = path.join(diffsFolder, entryFilePath)
@@ -78,6 +81,87 @@ async function main() {
         writeStream.write(markdownFileBanner)
 
         const { oldOutputFileAbsolutePath, newOutputFileAbsolutePath } = value
+
+        const fileInfoResult = await getFileInfo(oldOutputFileAbsolutePath)
+
+        const prettierOptions = {
+          parser: fileInfoResult.inferredParser ?? 'babel',
+          printWidth: Number.POSITIVE_INFINITY,
+          semi: true,
+          singleQuote: true,
+          filepath: oldOutputFileAbsolutePath,
+          endOfLine: 'lf',
+          objectWrap: 'collapse',
+        } as const satisfies Options
+
+        const oldFileContent = await format(
+          await fs.readFile(oldOutputFileAbsolutePath, {
+            encoding: 'utf-8',
+          }),
+          prettierOptions,
+        )
+
+        const newFileContent = await format(
+          await fs.readFile(newOutputFileAbsolutePath, {
+            encoding: 'utf-8',
+          }),
+          prettierOptions,
+        )
+
+        const twoFilesPatch = createTwoFilesPatch(
+          `\`tsup\` ${entryFilePath}`,
+          `\`tsdown\` ${entryFilePath}`,
+          oldFileContent,
+          newFileContent,
+          undefined,
+          undefined,
+          {
+            ignoreWhitespace: true,
+            stripTrailingCr: true,
+            context: 1_000_000,
+          },
+        )
+
+        // Works well but is super slow.
+        // if (oldOutputFileAbsolutePath.endsWith('.d.mts')) {
+        //   diffChars(oldFileContent, newFileContent, {
+        //     callback(changeObjects) {
+        //       const element = changeObjects
+        //         .map((e) => {
+        //           return e.removed
+        //             ? styleText(['bgRed'], e.value, { stream: process.stdout })
+        //             : e.added
+        //               ? styleText(['bgGreen'], e.value, {
+        //                   stream: process.stdout,
+        //                 })
+        //               : e.value
+        //         })
+        //         .join('')
+
+        //       console.log(element)
+        //     },
+        //   })
+        // }
+
+        // const element = changeObjects.map((e) => {
+        //   return e.removed
+        //     ? styleText(['bgRed'], e.value, { stream: process.stdout })
+        //     : e.added
+        //       ? styleText(['bgGreen'], e.value, { stream: process.stdout })
+        //       : e.value
+        // })
+
+        // console.info(element.join(''))
+
+        writeStream.write(twoFilesPatch)
+
+        // await fs.writeFile(
+        //   markdownFile,
+        //   `${markdownFileBanner}${twoFilesPatch}${markdownFileFooter}`,
+        //   { encoding: 'utf-8' },
+        // )
+
+        // console.dir(parsePatch(twoFilesPatch), { depth: null })
 
         /**
          * ## **Diff options used:**
@@ -94,53 +178,53 @@ async function main() {
          * - [X] **`--suppress-common-lines`**   do not output common lines
          * - [X] **`--strip-trailing-cr`**         strip trailing carriage return on input
          */
-        const diff = spawn(
-          'diff',
-          [
-            '--unified=1000000',
-            '-dwBbZaE',
-            '--suppress-blank-empty',
-            '--suppress-common-lines',
-            '--strip-trailing-cr',
-            '--minimal',
-            path.posix.join(
-              ...path.join(oldOutputPath, entryFilePath).split(path.sep),
-            ),
-            '--label',
-            `\`tsup\` ${entryFilePath}`,
-            path.posix.join(
-              ...path.join(newOutputPath, entryFilePath).split(path.sep),
-            ),
-            '--label',
-            `\`tsdown\` ${entryFilePath}`,
-          ],
-          { stdio: 'pipe' },
-        )
+        // const diff = spawn(
+        //   'diff',
+        //   [
+        //     '--unified=1000000',
+        //     '-dwBbZaE',
+        //     '--suppress-blank-empty',
+        //     '--suppress-common-lines',
+        //     '--strip-trailing-cr',
+        //     '--minimal',
+        //     path.posix.join(
+        //       ...path.join(oldOutputPath, entryFilePath).split(path.sep),
+        //     ),
+        //     '--label',
+        //     `\`tsup\` ${entryFilePath}`,
+        //     path.posix.join(
+        //       ...path.join(newOutputPath, entryFilePath).split(path.sep),
+        //     ),
+        //     '--label',
+        //     `\`tsdown\` ${entryFilePath}`,
+        //   ],
+        //   { stdio: 'pipe' },
+        // )
 
-        // Pipe diff output into the file, but don't auto-end the file
-        diff.stdout.pipe(writeStream, { end: false })
+        // // Pipe diff output into the file, but don't auto-end the file
+        // diff.stdout.pipe(writeStream, { end: false })
 
-        // Wait for diff to finish producing output
-        await new Promise<void>((resolve, reject) => {
-          diff.on('error', reject)
-          writeStream.on('error', reject)
+        // // Wait for diff to finish producing output
+        // await new Promise<void>((resolve, reject) => {
+        //   diff.on('error', reject)
+        //   writeStream.on('error', reject)
 
-          // When the diff process is done and its stdout is closed,
-          // it's safe to write the footer.
-          diff.on('close', () => {
-            resolve()
-          })
-        })
+        //   // When the diff process is done and its stdout is closed,
+        //   // it's safe to write the footer.
+        //   diff.on('close', () => {
+        //     resolve()
+        //   })
+        // })
 
-        // Now write the footer and close the file
+        // // Now write the footer and close the file
         writeStream.write(markdownFileFooter)
         writeStream.end()
 
-        // Optionally ensure everything is flushed before continuing
-        await new Promise<void>((resolve, reject) => {
-          writeStream.on('finish', resolve)
-          writeStream.on('error', reject)
-        })
+        // // Optionally ensure everything is flushed before continuing
+        // await new Promise<void>((resolve, reject) => {
+        //   writeStream.on('finish', resolve)
+        //   writeStream.on('error', reject)
+        // })
 
         const newOutputFileAbsolutePosixPath = path.posix.join(
           ...newOutputFileAbsolutePath.split(path.sep),
@@ -152,8 +236,9 @@ async function main() {
             oldOutputFileAbsolutePath.endsWith('.development.cjs') ||
             oldOutputFileAbsolutePath.endsWith('.browser.mjs') ||
             oldOutputFileAbsolutePath.endsWith('.legacy-esm.js') ||
-            oldOutputFileAbsolutePath.endsWith('index.d.ts') ||
+            // oldOutputFileAbsolutePath.endsWith('index.d.ts') ||
             oldOutputFileAbsolutePath.endsWith('uncheckedindexed.ts') ||
+            oldOutputFileAbsolutePath.endsWith('.modern.mjs') ||
             oldOutputFileAbsolutePath.endsWith('index.js')
           )
         ) {

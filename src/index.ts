@@ -6,26 +6,23 @@ import * as path from 'node:path'
 import { styleText } from 'node:util'
 import type { Options } from 'prettier'
 import { format, getFileInfo } from 'prettier'
-
-const ROOT_DIRECTORY = path.join(import.meta.dirname, '..')
+import {
+  DIFFS_DIRECTORY,
+  NEW_OUTPUT_PATH,
+  OLD_OUTPUT_PATH,
+} from './constants.ts'
 
 async function main() {
-  const diffsFolder = path.join(ROOT_DIRECTORY, 'diffs')
-
-  const oldOutputPath = path.join(ROOT_DIRECTORY, 'outputs', 'old-output')
-
-  const newOutputPath = path.join(ROOT_DIRECTORY, 'outputs', 'new-output')
-
-  await fs.mkdir(oldOutputPath, {
+  await fs.mkdir(OLD_OUTPUT_PATH, {
     recursive: true,
   })
 
-  await fs.mkdir(newOutputPath, {
+  await fs.mkdir(NEW_OUTPUT_PATH, {
     recursive: true,
   })
 
   const oldOutputFilePaths = (
-    await fs.readdir(oldOutputPath, {
+    await fs.readdir(OLD_OUTPUT_PATH, {
       encoding: 'utf-8',
       recursive: true,
       withFileTypes: true,
@@ -35,42 +32,54 @@ async function main() {
     .filter((dirent) => !dirent.name.endsWith('.map'))
     .map((dirent) => path.join(dirent.parentPath, dirent.name))
 
-  const newOutputFilePaths = oldOutputFilePaths.map((oldOutputFile) =>
-    path.join(
-      ROOT_DIRECTORY,
-      'outputs',
-      'new-output',
-      ...path
-        .relative(path.join(ROOT_DIRECTORY, 'outputs'), oldOutputFile)
-        .split(path.sep)
-        .slice(1),
-    ),
-  )
-
   const contentsMap = Object.fromEntries(
-    oldOutputFilePaths.map(
-      (oldOutputFilePath) =>
-        [
-          path.relative(oldOutputPath, oldOutputFilePath),
-          {
-            oldOutputFileAbsolutePath: oldOutputFilePath,
-            newOutputFileAbsolutePath: path.join(
-              newOutputPath,
-              path.relative(oldOutputPath, oldOutputFilePath),
+    oldOutputFilePaths.map((oldOutputAbsolutePath) => {
+      const oldOutputRelativePath = path.relative(
+        OLD_OUTPUT_PATH,
+        oldOutputAbsolutePath,
+      )
+
+      const oldOutputPathParts = oldOutputRelativePath.split(path.sep)
+
+      const newOutputAbsolutePath = path.join(
+        NEW_OUTPUT_PATH,
+        ...oldOutputPathParts,
+      )
+
+      return [
+        oldOutputRelativePath,
+        {
+          relativePath: oldOutputRelativePath,
+          relativePosixPath: path.posix.join(...oldOutputPathParts),
+          oldOutput: {
+            absolutePath: oldOutputAbsolutePath,
+            absolutePosixPath: path.posix.join(
+              ...oldOutputAbsolutePath.split(path.sep),
             ),
+            relativePath: oldOutputRelativePath,
           },
-        ] as const,
-    ),
+          newOutput: {
+            absolutePath: newOutputAbsolutePath,
+            absolutePosixPath: path.posix.join(
+              ...newOutputAbsolutePath.split(path.sep),
+            ),
+            relativePath: path.relative(NEW_OUTPUT_PATH, newOutputAbsolutePath),
+          },
+        },
+      ] as const
+    }),
   )
 
-  const diffsMap = Object.fromEntries(
-    await Promise.all(
-      Object.entries(contentsMap).map(async ([entryFilePath, value]) => {
-        const markdownFileBanner = `<details><summary>\n\n# **\`${path.posix.join(...entryFilePath.split(path.sep))}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
+  await Promise.all(
+    Object.entries(contentsMap).map(
+      async ([entryFilePath, { newOutput, oldOutput, relativePosixPath }]) => {
+        const markdownFileBanner = `<details><summary>\n\n# **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
         const markdownFileFooter = '```\n\n</details>\n'
 
-        const filePath = path.join(diffsFolder, entryFilePath)
-        const parentDir = path.dirname(path.join(diffsFolder, entryFilePath))
+        const filePath = path.join(DIFFS_DIRECTORY, entryFilePath)
+        const parentDir = path.dirname(
+          path.join(DIFFS_DIRECTORY, entryFilePath),
+        )
         await fs.mkdir(parentDir, { recursive: true })
 
         const markdownFile = `${filePath}.md`
@@ -80,29 +89,27 @@ async function main() {
 
         writeStream.write(markdownFileBanner)
 
-        const { oldOutputFileAbsolutePath, newOutputFileAbsolutePath } = value
-
-        const fileInfoResult = await getFileInfo(oldOutputFileAbsolutePath)
+        const fileInfoResult = await getFileInfo(oldOutput.absolutePath)
 
         const prettierOptions = {
+          endOfLine: 'lf',
+          filepath: oldOutput.absolutePath,
+          objectWrap: 'collapse',
           parser: fileInfoResult.inferredParser ?? 'babel',
           printWidth: Number.POSITIVE_INFINITY,
           semi: true,
           singleQuote: true,
-          filepath: oldOutputFileAbsolutePath,
-          endOfLine: 'lf',
-          objectWrap: 'collapse',
         } as const satisfies Options
 
         const oldFileContent = await format(
-          await fs.readFile(oldOutputFileAbsolutePath, {
+          await fs.readFile(oldOutput.absolutePath, {
             encoding: 'utf-8',
           }),
           prettierOptions,
         )
 
         const newFileContent = await format(
-          await fs.readFile(newOutputFileAbsolutePath, {
+          await fs.readFile(newOutput.absolutePath, {
             encoding: 'utf-8',
           }),
           prettierOptions,
@@ -123,7 +130,7 @@ async function main() {
         )
 
         // Works well but is super slow.
-        // if (oldOutputFileAbsolutePath.endsWith('.d.mts')) {
+        // if (oldOutput.absolutePath.endsWith('.d.mts')) {
         //   diffChars(oldFileContent, newFileContent, {
         //     callback(changeObjects) {
         //       const element = changeObjects
@@ -142,16 +149,6 @@ async function main() {
         //     },
         //   })
         // }
-
-        // const element = changeObjects.map((e) => {
-        //   return e.removed
-        //     ? styleText(['bgRed'], e.value, { stream: process.stdout })
-        //     : e.added
-        //       ? styleText(['bgGreen'], e.value, { stream: process.stdout })
-        //       : e.value
-        // })
-
-        // console.info(element.join(''))
 
         writeStream.write(twoFilesPatch)
 
@@ -217,8 +214,7 @@ async function main() {
         // })
 
         // // Now write the footer and close the file
-        writeStream.write(markdownFileFooter)
-        writeStream.end()
+        writeStream.end(markdownFileFooter)
 
         // // Optionally ensure everything is flushed before continuing
         // await new Promise<void>((resolve, reject) => {
@@ -226,49 +222,56 @@ async function main() {
         //   writeStream.on('error', reject)
         // })
 
-        const newOutputFileAbsolutePosixPath = path.posix.join(
-          ...newOutputFileAbsolutePath.split(path.sep),
-        )
+        const excludedExtensions = [
+          '.production.min.cjs',
+          '.development.cjs',
+          '.browser.mjs',
+          '.legacy-esm.js',
+          '.d.ts',
+          'uncheckedindexed.ts',
+          '.modern.mjs',
+          'index.js',
+        ] as const satisfies string[]
 
         if (
-          !(
-            oldOutputFileAbsolutePath.endsWith('.production.min.cjs') ||
-            oldOutputFileAbsolutePath.endsWith('.development.cjs') ||
-            oldOutputFileAbsolutePath.endsWith('.browser.mjs') ||
-            oldOutputFileAbsolutePath.endsWith('.legacy-esm.js') ||
-            // oldOutputFileAbsolutePath.endsWith('index.d.ts') ||
-            oldOutputFileAbsolutePath.endsWith('uncheckedindexed.ts') ||
-            oldOutputFileAbsolutePath.endsWith('.modern.mjs') ||
-            oldOutputFileAbsolutePath.endsWith('index.js')
+          !excludedExtensions.some((excludedExtension) =>
+            oldOutput.absolutePath.endsWith(excludedExtension),
           )
         ) {
           const vSCodeDiff = spawn(
             'code',
-            [
-              '-d',
-              path.posix.join(...oldOutputFileAbsolutePath.split(path.sep)),
-              newOutputFileAbsolutePosixPath,
-            ],
+            ['-d', oldOutput.absolutePosixPath, newOutput.absolutePosixPath],
             { stdio: 'inherit', shell: 'bash' },
           )
         }
 
-        if (newOutputFileAbsolutePath.endsWith('.d.mts')) {
-          const newFileContent = await fs.readFile(newOutputFileAbsolutePath, {
-            encoding: 'utf-8',
-          })
+        const includedExtensions = [
+          '.d.mts',
+          '.d.ts',
+        ] as const satisfies string[]
 
+        if (
+          includedExtensions.some((includedExtension) =>
+            oldOutput.absolutePath.endsWith(includedExtension),
+          )
+        ) {
           const hasDuplicateSymbols = newFileContent.match(/\w+\$1\b/g)
 
           if (hasDuplicateSymbols) {
             console.error(
-              `\nFound duplicated symbols:\n${styleText(['bold', 'blue', 'doubleunderline'], hasDuplicateSymbols.map((e, index) => `${(index + 1).toString()}. ${e}`).join('\n'))}\nin entry:\n${styleText(['underline', 'redBright', 'italic', 'bold'], newOutputFileAbsolutePosixPath)}`,
+              `\nFound duplicated symbols:\n${styleText(
+                ['bold', 'blue', 'doubleunderline'],
+                hasDuplicateSymbols
+                  .map(
+                    (duplicateSymbolName, index) =>
+                      `${(index + 1).toString()}. ${duplicateSymbolName}`,
+                  )
+                  .join('\n'),
+              )}\nin entry:\n${styleText(['underline', 'redBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
             )
           }
         }
-
-        return [entryFilePath, value] as const
-      }),
+      },
     ),
   )
 }

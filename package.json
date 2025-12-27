@@ -10,14 +10,14 @@
     "@aryaemami59/prettier-config": "^0.0.5",
     "@aryaemami59/tsconfig": "^0.0.5",
     "@aryaemami59/vitest-config": "^0.0.5",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "diff": "^8.0.2",
     "eslint": "^9.39.2",
     "jiti": "^2.6.1",
     "prettier": "^3.7.4",
     "rimraf": "^6.1.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "license": "MIT",
   "name": "diff-build-output",
@@ -25,7 +25,7 @@
   "private": true,
   "scripts": {
     "build": "node src/index.ts",
-    "clean": "rimraf --verbose diffs/",
+    "clean": "rimraf diffs/",
     "format": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --write $INIT_CWD",
     "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
     "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",

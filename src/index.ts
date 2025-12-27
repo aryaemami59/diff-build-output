@@ -112,7 +112,7 @@ async function main() {
           await fs.readFile(newOutput.absolutePath, {
             encoding: 'utf-8',
           }),
-          prettierOptions,
+          { ...prettierOptions, filepath: newOutput.absolutePath },
         )
 
         const twoFilesPatch = createTwoFilesPatch(
@@ -222,12 +222,15 @@ async function main() {
         //   writeStream.on('error', reject)
         // })
 
+        const includedExtensions = process.argv.slice(2)
+
         const excludedExtensions = [
           '.production.min.cjs',
           '.development.cjs',
           '.browser.mjs',
           '.legacy-esm.js',
           '.d.ts',
+          '.d.mts',
           'uncheckedindexed.ts',
           '.modern.mjs',
           'index.js',
@@ -236,28 +239,35 @@ async function main() {
         if (
           !excludedExtensions.some((excludedExtension) =>
             oldOutput.absolutePath.endsWith(excludedExtension),
-          )
+          ) ||
+          (includedExtensions.length &&
+            includedExtensions.some((includedExtension) =>
+              oldOutput.absolutePath.endsWith(includedExtension),
+            ))
         ) {
           const vSCodeDiff = spawn(
-            'code',
-            ['-d', oldOutput.absolutePosixPath, newOutput.absolutePosixPath],
-            { stdio: 'inherit', shell: 'bash' },
+            'bash',
+            [
+              '-c',
+              `code --disable-gpu --disable-lcd-text -d ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}`,
+            ] as const,
+            { stdio: 'inherit' } as const,
           )
         }
 
-        const includedExtensions = [
+        const extensionsToCheckForDuplicateSymbols = [
           '.d.mts',
           '.d.ts',
         ] as const satisfies string[]
 
-        if (
-          includedExtensions.some((includedExtension) =>
-            oldOutput.absolutePath.endsWith(includedExtension),
-          )
-        ) {
-          const hasDuplicateSymbols = newFileContent.match(/\w+\$1\b/g)
+        const hasDuplicateSymbols = newFileContent.match(/\w+\$1\b/g)
 
-          if (hasDuplicateSymbols) {
+        if (hasDuplicateSymbols) {
+          if (
+            extensionsToCheckForDuplicateSymbols.some((includedExtension) =>
+              oldOutput.absolutePath.endsWith(includedExtension),
+            )
+          ) {
             console.error(
               `\nFound duplicated symbols:\n${styleText(
                 ['bold', 'blue', 'doubleunderline'],
@@ -268,6 +278,14 @@ async function main() {
                   )
                   .join('\n'),
               )}\nin entry:\n${styleText(['underline', 'redBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+            )
+          } else if (
+            ['.modern.mjs'].some((extension) =>
+              oldOutput.absolutePath.endsWith(extension),
+            )
+          ) {
+            console.info(
+              `Found ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
             )
           }
         }

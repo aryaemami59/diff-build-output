@@ -255,6 +255,25 @@ async function main() {
           )
         }
 
+        if (
+          ['.modern.mjs'].some((extension) =>
+            oldOutput.absolutePath.endsWith(extension),
+          )
+        ) {
+          const pureAnnotationMatches = newFileContent.match(
+            /\/\*\s?[@#]__PURE__\s?\*\//g,
+          )
+
+          if (pureAnnotationMatches) {
+            const pureAnnotations = Array.from(pureAnnotationMatches).map(
+              (pureAnnotationMatch) => pureAnnotationMatch[0],
+            )
+            console.info(
+              `Found ${styleText(['bold', 'magentaBright', 'underline'], pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'], '@__PURE__')} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+            )
+          }
+        }
+
         const extensionsToCheckForDuplicateSymbols = [
           '.d.mts',
           '.d.ts',

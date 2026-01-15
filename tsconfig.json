@@ -1,7 +1,8 @@
 {
-  "extends": "@aryaemami59/tsconfig/node-next/with-js",
   "compilerOptions": {
     "allowImportingTsExtensions": true,
+    "declaration": true,
+    "declarationMap": true,
     "erasableSyntaxOnly": true,
     "lib": ["ESNext"],
     "libReplacement": false,
@@ -12,5 +13,6 @@
     "types": ["node"]
   },
   "exclude": ["dist", "**/dist/"],
+  "extends": "@aryaemami59/tsconfig/node-next/with-js",
   "include": ["**/*.*"]
 }

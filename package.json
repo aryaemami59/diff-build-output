@@ -1,25 +1,8 @@
 {
-  "author": {
-    "email": "aryaemami59@yahoo.com",
-    "name": "Arya Emami",
-    "url": "https://github.com/aryaemami59"
-  },
-  "bugs": {
-    "url": "https://github.com/aryaemami59/diff-build-output/issues"
-  },
-  "homepage": "https://github.com/aryaemami59/diff-build-output#readme",
-  "repository": {
-    "directory": ".",
-    "type": "git",
-    "url": "git+https://github.com/aryaemami59/diff-build-output.git"
-  },
-  "maintainers": [
-    {
-      "email": "aryaemami59@yahoo.com",
-      "name": "Arya Emami",
-      "url": "https://github.com/aryaemami59"
-    }
-  ],
+  "name": "diff-build-output",
+  "version": "0.0.0",
+  "private": true,
+  "description": "view and compare the difference between multiple build outputs",
   "keywords": [
     "build",
     "diff",
@@ -30,7 +13,62 @@
     "analyze",
     "size"
   ],
-  "description": "view and compare the difference between multiple build outputs",
+  "homepage": "https://github.com/aryaemami59/diff-build-output#readme",
+  "bugs": {
+    "url": "https://github.com/aryaemami59/diff-build-output/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aryaemami59/diff-build-output.git"
+  },
+  "license": "MIT",
+  "author": {
+    "email": "aryaemami59@yahoo.com",
+    "name": "Arya Emami",
+    "url": "https://github.com/aryaemami59"
+  },
+  "maintainers": [
+    {
+      "email": "aryaemami59@yahoo.com",
+      "name": "Arya Emami",
+      "url": "https://github.com/aryaemami59"
+    }
+  ],
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "scripts": {
+    "build": "yarn run clean && tsdown --config-loader='unrun' --config=$INIT_CWD/tsdown.config.mts",
+    "clean": "rimraf diffs/ dist/ .rolldown/",
+    "format": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --write $INIT_CWD",
+    "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
+    "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",
+    "lint-fix": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern --fix $INIT_CWD",
+    "test": "node --test tests/**",
+    "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "diff": "^8.0.3"
+  },
   "devDependencies": {
     "@aryaemami59/eslint-config": "^0.0.5",
     "@aryaemami59/prettier-config": "^0.0.5",
@@ -39,31 +77,28 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@types/node": "^25.0.8",
     "@types/react": "^19.2.8",
-    "diff": "^8.0.3",
     "eslint": "^9.39.2",
+    "eslint-plugin-package-json": "^0.88.1",
     "jiti": "^2.6.1",
+    "jsonc-eslint-parser": "^2.4.2",
     "prettier": "^3.8.0",
     "react": "^19.2.3",
     "react-redux": "^9.2.0",
     "rimraf": "^6.1.2",
+    "tsdown": "^0.20.0-beta.3",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
   },
-  "license": "MIT",
-  "name": "diff-build-output",
-  "packageManager": "yarn@4.12.0",
-  "private": true,
-  "scripts": {
-    "build": "node src/index.ts",
-    "clean": "rimraf diffs/",
-    "format": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --write $INIT_CWD",
-    "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
-    "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",
-    "lint-fix": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern --fix $INIT_CWD",
-    "test": "vitest --run --config=$INIT_CWD/vitest.config.mts",
-    "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
   },
-  "sideEffects": false,
-  "type": "module",
-  "version": "0.0.1"
+  "peerDependenciesMeta": {
+    "prettier": {
+      "optional": true
+    }
+  },
+  "packageManager": "yarn@4.12.0",
+  "engines": {
+    "node": ">=20.19.0"
+  }
 }

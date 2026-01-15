@@ -12,7 +12,7 @@ import {
   OLD_OUTPUT_PATH,
 } from './constants.ts'
 
-async function main() {
+export async function generateDiffReports() {
   await fs.mkdir(OLD_OUTPUT_PATH, {
     recursive: true,
   })
@@ -312,5 +312,3 @@ async function main() {
     ),
   )
 }
-
-void main()

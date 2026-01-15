@@ -4,6 +4,15 @@
     "name": "Arya Emami",
     "url": "https://github.com/aryaemami59"
   },
+  "bugs": {
+    "url": "https://github.com/aryaemami59/diff-build-output/issues"
+  },
+  "homepage": "https://github.com/aryaemami59/diff-build-output#readme",
+  "repository": {
+    "directory": ".",
+    "type": "git",
+    "url": "git+https://github.com/aryaemami59/diff-build-output.git"
+  },
   "description": "view and compare the difference between multiple build outputs",
   "devDependencies": {
     "@aryaemami59/eslint-config": "^0.0.5",

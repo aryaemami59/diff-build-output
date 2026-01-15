@@ -13,6 +13,23 @@
     "type": "git",
     "url": "git+https://github.com/aryaemami59/diff-build-output.git"
   },
+  "maintainers": [
+    {
+      "email": "aryaemami59@yahoo.com",
+      "name": "Arya Emami",
+      "url": "https://github.com/aryaemami59"
+    }
+  ],
+  "keywords": [
+    "build",
+    "diff",
+    "compare",
+    "output",
+    "tool",
+    "bundle",
+    "analyze",
+    "size"
+  ],
   "description": "view and compare the difference between multiple build outputs",
   "devDependencies": {
     "@aryaemami59/eslint-config": "^0.0.5",

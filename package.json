@@ -63,6 +63,7 @@
     "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
     "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",
     "lint-fix": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern --fix $INIT_CWD",
+    "prepack": "yarn run build",
     "test": "node --test tests/**",
     "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
   },
@@ -70,21 +71,24 @@
     "diff": "^8.0.3"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@aryaemami59/eslint-config": "^0.0.5",
     "@aryaemami59/prettier-config": "^0.0.5",
     "@aryaemami59/tsconfig": "^0.0.5",
     "@aryaemami59/vitest-config": "^0.0.5",
     "@reduxjs/toolkit": "^2.11.2",
-    "@types/node": "^25.0.8",
+    "@types/node": "^25.0.9",
     "@types/react": "^19.2.8",
     "eslint": "^9.39.2",
     "eslint-plugin-package-json": "^0.88.1",
     "jiti": "^2.6.1",
     "jsonc-eslint-parser": "^2.4.2",
     "prettier": "^3.8.0",
+    "publint": "^0.3.16",
     "react": "^19.2.3",
     "react-redux": "^9.2.0",
     "rimraf": "^6.1.2",
+    "rolldown": "1.0.0-beta.60",
     "tsdown": "^0.20.0-beta.3",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"

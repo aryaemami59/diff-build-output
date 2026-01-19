@@ -12,7 +12,12 @@ describe('generateDiffReports', () => {
     )
 
     await nodeAssertStrict.doesNotReject(async () => {
-      await generateDiffReports()
+      await generateDiffReports({
+        viewVSCodeDiffOptions: {
+          enabled: true,
+          includedExtensions: ['.modern.mjs'],
+        },
+      })
     })
   })
 })

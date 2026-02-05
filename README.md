@@ -62,10 +62,10 @@ Customization points and implementation details are located in the `src/` direct
 
 ## Contributing & community
 
-- Code of Conduct: [.github/CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md)
-- Contributing guide: [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md)
-- Security reporting: [SECURITY.md](SECURITY.md)
-- Support: [SUPPORT.md](SUPPORT.md)
+- Code of Conduct: [**`CODE_OF_CONDUCT.md`**](.github/CODE_OF_CONDUCT.md)
+- Contributing guide: [**`CONTRIBUTING.md`**](.github/CONTRIBUTING.md)
+- Security reporting: [**`SECURITY.md`**](.github/SECURITY.md)
+- Support: [**`SUPPORT.md`**](.github/SUPPORT.md)
 
 ---
 

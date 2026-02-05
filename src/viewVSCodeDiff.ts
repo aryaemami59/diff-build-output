@@ -27,9 +27,25 @@ export type ViewVSCodeDiffOptions = Simplify<
   } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>
 >
 
-export const viewVSCodeDiff = (
+/**
+ * Burrowed from {@link https://github.com/sxzz/rolldown-plugin-dts/blob/62aeaeac6af7169c5a69bdfeaa6c1d6ee3a587bc/src/tsgo.ts#L9C1-L14C5 | rolldown-plugin-dts}.
+ */
+const spawnAsync = (...args: Parameters<typeof spawn>) =>
+  new Promise<ChildProcess>((resolve, reject) => {
+    const child = spawn(...args)
+
+    return child
+      .on('close', () => {
+        resolve(child)
+      })
+      .on('error', (error) => {
+        reject(error)
+      })
+  })
+
+export const viewVSCodeDiff = async (
   viewVSCodeDiffOptions: ViewVSCodeDiffOptions,
-): ChildProcess | undefined => {
+): Promise<ChildProcess | undefined> => {
   const {
     includedExtensions = [],
     newOutput,
@@ -60,7 +76,7 @@ export const viewVSCodeDiff = (
       oldOutput.absolutePath.endsWith(includedExtension),
     )
   ) {
-    const vSCodeDiff = spawn(
+    const vSCodeDiff = await spawnAsync(
       'bash',
       [
         '-c',

@@ -271,7 +271,7 @@ export async function generateDiffReports(
         // })
 
         if (viewVSCodeDiffOptions.enabled) {
-          viewVSCodeDiff({
+          await viewVSCodeDiff({
             includedExtensions: viewVSCodeDiffOptions.includedExtensions,
             excludedExtensions: viewVSCodeDiffOptions.excludedExtensions,
             newOutput,

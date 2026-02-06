@@ -76,11 +76,13 @@ export const viewVSCodeDiff = async (
       oldOutput.absolutePath.endsWith(includedExtension),
     )
   ) {
-    const vSCodeDiff = await spawnAsync(
+    const vSCodeDiff = spawnAsync(
       'bash',
       [
         '-c',
-        `code --disable-gpu --disable-lcd-text -d ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}`,
+        `(
+        code --disable-gpu --disable-lcd-text --diff ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}
+        ) &`,
       ] as const,
       { stdio: 'inherit' } as const,
     )

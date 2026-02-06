@@ -120,7 +120,10 @@ export async function generateDiffReports(
 
   await Promise.all(
     Object.entries(contentsMap).map(
-      async ([entryFilePath, { newOutput, oldOutput, relativePosixPath }]) => {
+      async (
+        [entryFilePath, { newOutput, oldOutput, relativePosixPath }],
+        index,
+      ) => {
         const markdownFileBanner = `<details><summary>\n\n# **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
         const markdownFileFooter = '```\n\n</details>\n'
 
@@ -271,7 +274,7 @@ export async function generateDiffReports(
         // })
 
         if (viewVSCodeDiffOptions.enabled) {
-          await viewVSCodeDiff({
+          viewVSCodeDiff({
             includedExtensions: viewVSCodeDiffOptions.includedExtensions,
             excludedExtensions: viewVSCodeDiffOptions.excludedExtensions,
             newOutput,
@@ -280,22 +283,28 @@ export async function generateDiffReports(
         }
 
         if (checkForPureAnnotationsOptions.enabled) {
-          checkForPureAnnotations({
-            jsExtensions: checkForPureAnnotationsOptions.jsExtensions,
-            newFileContent,
-            newOutput,
-            oldOutput,
-          })
+          checkForPureAnnotations(
+            {
+              jsExtensions: checkForPureAnnotationsOptions.jsExtensions,
+              newFileContent,
+              newOutput,
+              oldOutput,
+            },
+            index,
+          )
         }
 
         if (checkForDuplicateSymbolsOptions.enabled) {
-          checkForDuplicateSymbols({
-            jsExtensions: checkForDuplicateSymbolsOptions.jsExtensions,
-            tsExtensions: checkForDuplicateSymbolsOptions.tsExtensions,
-            newFileContent,
-            newOutput,
-            oldOutput,
-          })
+          checkForDuplicateSymbols(
+            {
+              jsExtensions: checkForDuplicateSymbolsOptions.jsExtensions,
+              tsExtensions: checkForDuplicateSymbolsOptions.tsExtensions,
+              newFileContent,
+              newOutput,
+              oldOutput,
+            },
+            index,
+          )
         }
       },
     ),

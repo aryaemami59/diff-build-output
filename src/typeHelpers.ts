@@ -100,7 +100,7 @@ export type DistributedOmit<
  *
  *   // @ts-expect-error
  *   pickedUnion.foo.baz;
- *   //=> Error: `bar` is not a property of `{discriminant: 'A'; a: string}`.
+ *   //=> Error: `bar` is not a property of `{ discriminant: 'A'; a: string }`.
  * }
  * ```
  *
@@ -132,7 +132,7 @@ export type AnyNonNullishValue = NonNullable<unknown>
  *   foo: number;
  *   bar?: string;
  *   baz: number | undefined;
- * }
+ * };
  *
  * type SomeType = {
  *   foo: number;

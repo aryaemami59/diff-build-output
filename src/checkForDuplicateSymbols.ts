@@ -85,6 +85,7 @@ export type CheckForDuplicateSymbolsOptions = Simplify<
 
 export const checkForDuplicateSymbols = (
   checkForDuplicateSymbolsOptions: CheckForDuplicateSymbolsOptions,
+  index: number,
 ): void => {
   const { newFileContent, oldOutput, newOutput } =
     checkForDuplicateSymbolsOptions
@@ -130,7 +131,7 @@ export const checkForDuplicateSymbols = (
       )
     ) {
       console.info(
-        `\nFound ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
       )
     }
   }

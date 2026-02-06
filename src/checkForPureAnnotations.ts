@@ -37,6 +37,7 @@ export type CheckForPureAnnotationsOptions = Simplify<
 
 export const checkForPureAnnotations = (
   checkForPureAnnotationsOptions: CheckForPureAnnotationsOptions,
+  index: number,
 ): void => {
   const { newFileContent, newOutput, oldOutput } =
     checkForPureAnnotationsOptions
@@ -62,7 +63,7 @@ export const checkForPureAnnotations = (
       )
 
       console.info(
-        `\nFound ${styleText(['bold', 'magentaBright', 'underline'], pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'], '@__PURE__')} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'magentaBright', 'underline'], pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'], '@__PURE__')} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
       )
     }
   }

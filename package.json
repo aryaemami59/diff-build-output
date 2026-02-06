@@ -1,7 +1,6 @@
 {
   "name": "diff-build-output",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "view and compare the difference between multiple build outputs",
   "keywords": [
     "build",
@@ -72,6 +71,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
+    "@arethetypeswrong/core": "^0.18.2",
     "@aryaemami59/eslint-config": "^0.0.5",
     "@aryaemami59/prettier-config": "^0.0.5",
     "@aryaemami59/tsconfig": "^0.0.5",
@@ -94,9 +94,13 @@
     "vitest": "^4.0.18"
   },
   "peerDependencies": {
+    "@types/node": ">=20.0.0",
     "prettier": ">=3.0.0"
   },
   "peerDependenciesMeta": {
+    "@types/node": {
+      "optional": true
+    },
     "prettier": {
       "optional": true
     }
@@ -104,5 +108,8 @@
   "packageManager": "yarn@4.12.0",
   "engines": {
     "node": ">=20.19.0"
+  },
+  "publishConfig": {
+    "provenance": true
   }
 }

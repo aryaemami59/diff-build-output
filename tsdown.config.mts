@@ -2,15 +2,24 @@ import { defineConfig } from 'tsdown'
 import packageJson from './package.json' with { type: 'json' }
 
 const tsdownConfig = defineConfig({
-  attw: { enabled: true },
+  attw: { enabled: false, level: 'error' },
   clean: false,
-  dts: { enabled: true, resolver: 'tsc' },
+  // cwd: import.meta.dirname,
+  devtools: { clean: false },
+  dts: {
+    enabled: true,
+    // oxc: false,
+    resolver: 'tsc',
+  },
   entry: ['src/index.ts'],
   failOnWarn: true,
   fixedExtension: false,
-  format: ['cjs', 'esm'],
+  nodeProtocol: true,
+  platform: 'node',
+  shims: true,
+  format: ['cjs', 'es'],
   name: packageJson.name,
-  publint: { enabled: true, pack: false, strict: true },
+  publint: { enabled: false, strict: true },
   sourcemap: true,
   target: ['esnext'],
   treeshake: { moduleSideEffects: false },

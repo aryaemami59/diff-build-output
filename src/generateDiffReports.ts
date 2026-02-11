@@ -176,6 +176,11 @@ export async function generateDiffReports(
           {
             ignoreWhitespace: true,
             stripTrailingCr: true,
+            headerOptions: {
+              includeFileHeaders: false,
+              includeIndex: false,
+              includeUnderline: false,
+            },
             context: 1_000_000,
           },
         )
@@ -202,6 +207,10 @@ export async function generateDiffReports(
         // }
 
         writeStream.write(twoFilesPatch)
+
+        void fs.writeFile(`${filePath}-diff.patch`, twoFilesPatch, {
+          encoding: 'utf-8',
+        })
 
         // await fs.writeFile(
         //   markdownFile,
@@ -274,7 +283,7 @@ export async function generateDiffReports(
         // })
 
         if (viewVSCodeDiffOptions.enabled) {
-          viewVSCodeDiff({
+          void viewVSCodeDiff({
             includedExtensions: viewVSCodeDiffOptions.includedExtensions,
             excludedExtensions: viewVSCodeDiffOptions.excludedExtensions,
             newOutput,

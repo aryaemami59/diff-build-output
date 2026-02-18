@@ -1,3 +1,4 @@
+import * as console from 'node:console'
 import { styleText } from 'node:util'
 import type { DistributedOmit, LiteralUnion, Simplify } from './typeHelpers.ts'
 
@@ -86,6 +87,7 @@ export type CheckForDuplicateSymbolsOptions = Simplify<
 export const checkForDuplicateSymbols = (
   checkForDuplicateSymbolsOptions: CheckForDuplicateSymbolsOptions,
   index: number,
+  verbose = false,
 ): void => {
   const { newFileContent, oldOutput, newOutput } =
     checkForDuplicateSymbolsOptions
@@ -106,7 +108,12 @@ export const checkForDuplicateSymbols = (
         '.d.ts',
       ] as const satisfies CheckForDuplicateSymbolsOptions['tsExtensions'])
 
-  const hasDuplicateSymbols = newFileContent.match(/\w+\$1\b/g)
+  const allMatches = [...newFileContent.matchAll(/\w+\$1\b/gim)]
+
+  const hasDuplicateSymbols =
+    allMatches.length > 0
+      ? allMatches.map((symbolMatch) => symbolMatch[0])
+      : null
 
   if (hasDuplicateSymbols) {
     if (
@@ -131,8 +138,39 @@ export const checkForDuplicateSymbols = (
       )
     ) {
       console.info(
-        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}\n`,
       )
+
+      if (verbose) {
+        const matchLocations = allMatches.map((matchedSymbol) => {
+          const before = newFileContent.slice(0, matchedSymbol.index)
+
+          const line = before.split('\n').length
+
+          const column = matchedSymbol.index - before.lastIndexOf('\n')
+
+          return { line, column, symbol: matchedSymbol[0] }
+        })
+
+        matchLocations.map((matchLocation) => {
+          const location = styleText(
+            ['underline', 'bold', 'yellowBright'],
+            `${newOutput.absolutePosixPath}:${matchLocation.line.toString()}:${matchLocation.column.toString()}`,
+          )
+
+          const matchedSymbol = styleText(
+            ['blueBright', 'bold', 'bold'],
+            matchLocation.symbol,
+          )
+
+          console.info(`  ${matchedSymbol} at ${location}`)
+
+          return {
+            location,
+            matchedSymbol,
+          }
+        })
+      }
     }
   }
 }

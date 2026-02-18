@@ -30,7 +30,7 @@ export type ViewVSCodeDiffOptions = Simplify<
 /**
  * Burrowed from {@link https://github.com/sxzz/rolldown-plugin-dts/blob/62aeaeac6af7169c5a69bdfeaa6c1d6ee3a587bc/src/tsgo.ts#L9C1-L14C5 | rolldown-plugin-dts}.
  */
-const spawnAsync = (...args: Parameters<typeof spawn>) =>
+export const spawnAsync = (...args: Parameters<typeof spawn>) =>
   new Promise<ChildProcess>((resolve, reject) => {
     const child = spawn(...args)
 

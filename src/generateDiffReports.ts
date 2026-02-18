@@ -16,21 +16,22 @@ import {
   DIFFS_DIRECTORY,
   NEW_OUTPUT_PATH,
   OLD_OUTPUT_PATH,
+  ROOT_DIRECTORY,
 } from './constants.ts'
 import type { DistributedOmit } from './typeHelpers.ts'
 import type { ViewVSCodeDiffOptions } from './viewVSCodeDiff.ts'
-import { viewVSCodeDiff } from './viewVSCodeDiff.ts'
+import { spawnAsync, viewVSCodeDiff } from './viewVSCodeDiff.ts'
 
 export type GenerateDiffReportsOptions = {
   checkForDuplicateSymbolsOptions?: WithEnabled<
     DistributedOmit<
-      CheckForDuplicateSymbolsOptions,
+      CheckForDuplicateSymbolsOptions & { verbose?: boolean },
       'newFileContent' | 'newOutput' | 'oldOutput'
     >
   >
   checkForPureAnnotationsOptions?: WithEnabled<
     DistributedOmit<
-      CheckForPureAnnotationsOptions,
+      CheckForPureAnnotationsOptions & { verbose?: boolean },
       'newFileContent' | 'newOutput' | 'oldOutput'
     >
   >
@@ -105,12 +106,14 @@ export async function generateDiffReports(
   const {
     checkForDuplicateSymbolsOptions = {
       enabled: true,
-      jsExtensions: ['.modern.mjs'],
+      jsExtensions: ['.development.cjs', '.legacy-esm.js', '.modern.mjs'],
       tsExtensions: ['.d.mts', '.d.ts'],
+      verbose: true,
     },
     checkForPureAnnotationsOptions = {
       enabled: true,
-      jsExtensions: ['.modern.mjs'],
+      jsExtensions: ['.development.cjs', '.legacy-esm.js', '.modern.mjs'],
+      verbose: true,
     },
     viewVSCodeDiffOptions = {
       enabled: true,
@@ -118,13 +121,13 @@ export async function generateDiffReports(
     },
   } = generateDiffReportsOptions
 
-  await Promise.all(
+  const markdownDiffEntries = await Promise.all(
     Object.entries(contentsMap).map(
       async (
         [entryFilePath, { newOutput, oldOutput, relativePosixPath }],
         index,
       ) => {
-        const markdownFileBanner = `<details><summary>\n\n# **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
+        const markdownFileBanner = `<details><summary>\n\n## **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
         const markdownFileFooter = '```\n\n</details>\n'
 
         const filePath = path.join(DIFFS_DIRECTORY, entryFilePath)
@@ -152,34 +155,40 @@ export async function generateDiffReports(
           singleQuote: true,
         } as const satisfies Options
 
+        const nonFormattedOldContent = await fs.readFile(
+          oldOutput.absolutePath,
+          { encoding: 'utf-8' },
+        )
+
+        const nonFormattedNewContent = await fs.readFile(
+          newOutput.absolutePath,
+          { encoding: 'utf-8' },
+        )
+
         const oldFileContent = await format(
-          await fs.readFile(oldOutput.absolutePath, {
-            encoding: 'utf-8',
-          }),
+          nonFormattedOldContent,
           prettierOptions,
         )
 
-        const newFileContent = await format(
-          await fs.readFile(newOutput.absolutePath, {
-            encoding: 'utf-8',
-          }),
-          { ...prettierOptions, filepath: newOutput.absolutePath },
-        )
+        const newFileContent = await format(nonFormattedNewContent, {
+          ...prettierOptions,
+          filepath: newOutput.absolutePath,
+        })
 
         const twoFilesPatch = createTwoFilesPatch(
-          `\`tsup\` ${entryFilePath}`,
-          `\`tsdown\` ${entryFilePath}`,
-          oldFileContent,
-          newFileContent,
-          undefined,
-          undefined,
+          /* oldFileName */ `\`tsup\` ${relativePosixPath}`,
+          /* newFileName */ `\`tsdown\` ${relativePosixPath}`,
+          /* oldStr */ oldFileContent,
+          /* newStr */ newFileContent,
+          /* oldHeader */ undefined,
+          /* newHeader */ undefined,
           {
             ignoreWhitespace: true,
             stripTrailingCr: true,
             headerOptions: {
-              includeFileHeaders: false,
-              includeIndex: false,
-              includeUnderline: false,
+              includeFileHeaders: true,
+              includeIndex: true,
+              includeUnderline: true,
             },
             context: 1_000_000,
           },
@@ -295,11 +304,12 @@ export async function generateDiffReports(
           checkForPureAnnotations(
             {
               jsExtensions: checkForPureAnnotationsOptions.jsExtensions,
-              newFileContent,
+              newFileContent: nonFormattedNewContent,
               newOutput,
               oldOutput,
             },
             index,
+            checkForPureAnnotationsOptions.verbose ?? false,
           )
         }
 
@@ -308,14 +318,53 @@ export async function generateDiffReports(
             {
               jsExtensions: checkForDuplicateSymbolsOptions.jsExtensions,
               tsExtensions: checkForDuplicateSymbolsOptions.tsExtensions,
-              newFileContent,
+              newFileContent: nonFormattedNewContent,
               newOutput,
               oldOutput,
             },
             index,
+            checkForDuplicateSymbolsOptions.verbose ?? false,
           )
+        }
+
+        return {
+          entryFilePath,
+          markdownFilePath: markdownFile,
+          content: [markdownFileBanner, twoFilesPatch, markdownFileFooter].join(
+            '\n',
+          ),
         }
       },
     ),
   )
+
+  const all = path.join(ROOT_DIRECTORY, 'temp', 'all.md')
+
+  const allDiffsContent = `# **All Diffs**\n\n${markdownDiffEntries
+    .filter(({ entryFilePath }) =>
+      [
+        // '.modern.mjs',
+        // '.development.cjs',
+        '.d.ts',
+      ].some((supportedExtension) =>
+        entryFilePath.endsWith(supportedExtension),
+      ),
+    )
+    .toSorted((a, b) =>
+      path
+        .extname(a.entryFilePath)
+        .localeCompare(path.extname(b.entryFilePath)),
+    )
+    .map(({ content }) => content)
+    .join('\n')}`
+
+  await fs.mkdir(path.dirname(all), { recursive: true })
+
+  await fs.writeFile(all, allDiffsContent, { encoding: 'utf-8' })
+
+  if (process.platform === 'win32') {
+    await spawnAsync('bash', ['-lc', `clip.exe < '${all}'`], {
+      stdio: 'inherit',
+    } as const)
+  }
 }

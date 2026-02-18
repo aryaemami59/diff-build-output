@@ -1,3 +1,4 @@
+import * as console from 'node:console'
 import { styleText } from 'node:util'
 import type { ContentsInfo } from './checkForDuplicateSymbols.ts'
 import type { DistributedOmit, LiteralUnion, Simplify } from './typeHelpers.ts'
@@ -38,6 +39,7 @@ export type CheckForPureAnnotationsOptions = Simplify<
 export const checkForPureAnnotations = (
   checkForPureAnnotationsOptions: CheckForPureAnnotationsOptions,
   index: number,
+  verbose = false,
 ): void => {
   const { newFileContent, newOutput, oldOutput } =
     checkForPureAnnotationsOptions
@@ -53,9 +55,14 @@ export const checkForPureAnnotations = (
   if (
     jsExtensions.some((extension) => oldOutput.absolutePath.endsWith(extension))
   ) {
-    const pureAnnotationMatches = newFileContent.match(
-      /\/\*\s?[@#]__PURE__\s?\*\//g,
-    )
+    const allMatches = [
+      ...newFileContent.matchAll(/\/\*\s?([@#]__PURE__)\s?\*\//gim),
+    ]
+
+    const pureAnnotationMatches =
+      allMatches.length > 0
+        ? allMatches.map((symbolMatch) => symbolMatch[1])
+        : null
 
     if (pureAnnotationMatches) {
       const pureAnnotations = Array.from(pureAnnotationMatches).map(
@@ -63,8 +70,40 @@ export const checkForPureAnnotations = (
       )
 
       console.info(
-        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'magentaBright', 'underline'], pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'], '@__PURE__')} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'magentaBright', 'underline'] as const, pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'] as const, pureAnnotationMatches[0])} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'] as const, newOutput.absolutePosixPath)}\n`,
       )
+
+      if (verbose) {
+        const matchLocations = allMatches.map((matchedSymbol) => {
+          const before = newFileContent.slice(0, matchedSymbol.index)
+
+          const line = before.split('\n').length
+
+          const column = matchedSymbol.index - before.lastIndexOf('\n')
+
+          return { line, column, symbol: matchedSymbol[0] }
+        })
+
+        matchLocations.map((matchLocation) => {
+          const location = styleText(
+            ['underline', 'bold', 'blue'] as const,
+            `${newOutput.absolutePosixPath}:${matchLocation.line.toString()}:${matchLocation.column.toString()}`,
+          )
+
+          const matchedSymbol = styleText(
+            ['bold', 'bgMagenta'] as const,
+            pureAnnotationMatches[0],
+            // '@__PURE__',
+          )
+
+          console.info(`  ${matchedSymbol} at ${location}`)
+
+          return {
+            location,
+            matchedSymbol,
+          }
+        })
+      }
     }
   }
 }

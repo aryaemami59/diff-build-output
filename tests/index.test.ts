@@ -13,6 +13,31 @@ describe('generateDiffReports', () => {
 
     await nodeAssertStrict.doesNotReject(async () => {
       await generateDiffReports({
+        checkForDuplicateSymbolsOptions: {
+          enabled: true,
+          jsExtensions: [
+            // ".browser.mjs",
+            '.development.cjs',
+            '.legacy-esm.js',
+            '.modern.mjs',
+          ],
+          tsExtensions: [
+            // '.d.cts',
+            '.d.mts',
+            '.d.ts',
+          ],
+          verbose: true,
+        },
+        checkForPureAnnotationsOptions: {
+          enabled: true,
+          jsExtensions: [
+            // ".browser.mjs",
+            '.development.cjs',
+            '.legacy-esm.js',
+            '.modern.mjs',
+          ],
+          verbose: true,
+        },
         viewVSCodeDiffOptions: {
           enabled: true,
           // TODO: Figure out how to pass these options through CLI.

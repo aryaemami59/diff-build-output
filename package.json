@@ -63,7 +63,7 @@
     "lint": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern $INIT_CWD",
     "lint-fix": "eslint --config=$PROJECT_CWD/eslint.config.mts --no-error-on-unmatched-pattern --fix $INIT_CWD",
     "prepack": "yarn run build",
-    "test": "node --test tests/**",
+    "test": "node --test tests/**/*.test.ts",
     "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
   },
   "dependencies": {

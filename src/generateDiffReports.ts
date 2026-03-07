@@ -2,6 +2,7 @@ import { createTwoFilesPatch } from 'diff'
 import { createWriteStream } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
+import * as process from 'node:process'
 import type { Options } from 'prettier'
 import { format, getFileInfo } from 'prettier'
 import type {
@@ -127,8 +128,8 @@ export async function generateDiffReports(
         [entryFilePath, { newOutput, oldOutput, relativePosixPath }],
         index,
       ) => {
-        const markdownFileBanner = `<details><summary>\n\n## **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`diff\n`
-        const markdownFileFooter = '```\n\n</details>\n'
+        const markdownFileBanner = `<details><summary>\n\n## **\`${relativePosixPath}\` Diff**\n\n</summary>\n\n\`\`\`\`diff\n`
+        const markdownFileFooter = '````\n\n</details>\n'
 
         const filePath = path.join(DIFFS_DIRECTORY, entryFilePath)
         const parentDir = path.dirname(

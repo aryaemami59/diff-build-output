@@ -130,7 +130,10 @@ export const checkForDuplicateSymbols = (
                 `${(index + 1).toString()}. ${duplicateSymbolName}`,
             )
             .join('\n'),
-        )}\nin entry:\n${styleText(['underline', 'redBright', 'italic', 'bold'], newOutput.absolutePosixPath)}`,
+        )}\nin entry:\n${styleText(
+          ['underline', 'redBright', 'italic', 'bold'],
+          newOutput.absolutePosixPath,
+        )}`,
       )
     } else if (
       jsExtensions.some((extension) =>
@@ -138,7 +141,13 @@ export const checkForDuplicateSymbols = (
       )
     ) {
       console.info(
-        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'cyanBright', 'underline'], hasDuplicateSymbols.length.toString())} duplicated symbols in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'], newOutput.absolutePosixPath)}\n`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(
+          ['bold', 'cyanBright', 'underline'],
+          hasDuplicateSymbols.length.toString(),
+        )} duplicated symbols in entry:\n${styleText(
+          ['underline', 'yellowBright', 'italic', 'bold'],
+          newOutput.absolutePosixPath,
+        )}\n`,
       )
 
       if (verbose) {

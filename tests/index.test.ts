@@ -1,9 +1,14 @@
 import { generateDiffReports } from 'diff-build-output'
 import nodeAssert from 'node:assert'
 import nodeAssertStrict from 'node:assert/strict'
-import { describe, it } from 'node:test'
+import { setSourceMapsEnabled } from 'node:process'
+import { before, describe, it } from 'node:test'
 
 describe('generateDiffReports', () => {
+  before(() => {
+    setSourceMapsEnabled(true)
+  })
+
   it('should be a function', async () => {
     nodeAssert.strictEqual(
       typeof generateDiffReports,

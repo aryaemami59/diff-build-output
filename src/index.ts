@@ -1,1 +1,8 @@
+export { checkForDuplicateSymbols } from './checkForDuplicateSymbols.ts'
+export type { CheckForDuplicateSymbolsOptions } from './checkForDuplicateSymbols.ts'
+export { checkForPureAnnotations } from './checkForPureAnnotations.ts'
+export type { CheckForPureAnnotationsOptions } from './checkForPureAnnotations.ts'
 export { generateDiffReports } from './generateDiffReports.ts'
+export type { GenerateDiffReportsOptions } from './generateDiffReports.ts'
+export { viewVSCodeDiff } from './viewVSCodeDiff.ts'
+export type { ViewVSCodeDiffOptions } from './viewVSCodeDiff.ts'

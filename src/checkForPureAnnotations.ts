@@ -70,7 +70,16 @@ export const checkForPureAnnotations = (
       )
 
       console.info(
-        `\n- ${(index + 1).toString()}. Found ${styleText(['bold', 'magentaBright', 'underline'] as const, pureAnnotations.length.toString())} ${styleText(['bold', 'bgWhite', 'whiteBright'] as const, pureAnnotationMatches[0])} annotations in entry:\n${styleText(['underline', 'yellowBright', 'italic', 'bold'] as const, newOutput.absolutePosixPath)}\n`,
+        `\n- ${(index + 1).toString()}. Found ${styleText(
+          ['bold', 'magentaBright', 'underline'] as const,
+          pureAnnotations.length.toString(),
+        )} ${styleText(
+          ['bold', 'bgWhite', 'whiteBright'] as const,
+          pureAnnotationMatches[0],
+        )} annotations in entry:\n${styleText(
+          ['underline', 'yellowBright', 'italic', 'bold'] as const,
+          newOutput.absolutePosixPath,
+        )}\n`,
       )
 
       if (verbose) {

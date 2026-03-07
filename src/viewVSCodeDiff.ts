@@ -1,7 +1,16 @@
 import type { ChildProcess } from 'node:child_process'
-import { spawn } from 'node:child_process'
+/*
+TODO: Investigate why `import { spawn } from 'node:child_process'` cause `index.d.ts` to be different from `index.d.cts`.
+*/
+// import { spawn } from 'node:child_process'
+// import * as child_process from "node:child_process"
+import * as process from 'node:process'
 import type { ContentsInfo } from './checkForDuplicateSymbols.ts'
 import type { DistributedOmit, LiteralUnion, Simplify } from './typeHelpers.ts'
+
+process.setSourceMapsEnabled(true)
+
+const child_process = process.getBuiltinModule('node:child_process')
 
 export type ViewVSCodeDiffOptions = Simplify<
   {
@@ -30,9 +39,13 @@ export type ViewVSCodeDiffOptions = Simplify<
 /**
  * Burrowed from {@link https://github.com/sxzz/rolldown-plugin-dts/blob/62aeaeac6af7169c5a69bdfeaa6c1d6ee3a587bc/src/tsgo.ts#L9C1-L14C5 | rolldown-plugin-dts}.
  */
-export const spawnAsync = (...args: Parameters<typeof spawn>) =>
-  new Promise<ChildProcess>((resolve, reject) => {
-    const child = spawn(...args)
+export const spawnAsync = (
+  ...args: Parameters<typeof child_process.spawn>
+): Promise<ChildProcess> => {
+  process.setSourceMapsEnabled(true)
+
+  return new Promise<ChildProcess>((resolve, reject) => {
+    const child = child_process.spawn(...args)
 
     return child
       .on('close', () => {
@@ -42,6 +55,7 @@ export const spawnAsync = (...args: Parameters<typeof spawn>) =>
         reject(error)
       })
   })
+}
 
 export const viewVSCodeDiff = async (
   viewVSCodeDiffOptions: ViewVSCodeDiffOptions,
@@ -79,7 +93,7 @@ export const viewVSCodeDiff = async (
     const vSCodeDiff = spawnAsync(
       'bash',
       [
-        '-c',
+        '-lc',
         `(
         code --disable-gpu --disable-lcd-text --diff ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}
         ) &`,

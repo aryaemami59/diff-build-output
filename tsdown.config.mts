@@ -1,4 +1,4 @@
-import type { InlineConfig, Rolldown } from 'tsdown'
+import type { InlineConfig, Rolldown, UserConfig } from 'tsdown'
 import { defineConfig } from 'tsdown'
 import packageJson from './package.json' with { type: 'json' }
 
@@ -14,7 +14,8 @@ const external = [
 const tsdownConfig = defineConfig((cliOptions) => {
   const commonOptions = {
     attw: { enabled: false, level: 'error' },
-    clean: true,
+    checks: { circularDependency: true },
+    clean: false,
     cwd: import.meta.dirname,
     deps: { neverBundle: external, onlyAllowBundle: [] },
     devtools: { clean: true, enabled: true },
@@ -34,10 +35,17 @@ const tsdownConfig = defineConfig((cliOptions) => {
         },
       } as const satisfies Rolldown.InputOptions
     },
+    minify: false,
+    nodeProtocol: true,
     outputOptions(options, format, context) {
       return {
         ...options,
         codeSplitting: false,
+        comments: {
+          annotation: true,
+          jsdoc: true,
+          legal: true,
+        },
         strict: true,
         // plugins: [
         //   {
@@ -63,45 +71,8 @@ const tsdownConfig = defineConfig((cliOptions) => {
         ...(format === 'cjs' && !context.cjsDts
           ? {
               externalLiveBindings: false,
-              // intro(chunk) {
-              //   if (!(/\.([cm]?)jsx?$/.test(chunk.fileName) && chunk.isEntry)) {
-              //     return ''
-              //   }
-
-              //   return '"use strict";'
-              // },
             }
           : {}),
-        ...(context.cjsDts
-          ? {
-              // plugins: [
-              //   {
-              //     name: 'remove-cjs-outputs-from-dts-builds',
-              //     generateBundle: {
-              //       handler(outputOptions, bundle, isWrite) {
-              //         console.log(bundle)
-              //         Object.values(bundle).forEach((outputBundles) => {
-              //           if (
-              //             outputOptions.format === 'cjs' &&
-              //             isWrite &&
-              //             (outputBundles.fileName.endsWith('index.cjs') ||
-              //               outputBundles.fileName.endsWith('index.cjs.map'))
-              //           ) {
-              //             delete bundle[outputBundles.fileName]
-              //           }
-              //         })
-              //       },
-              //     },
-              //   },
-              // ],
-            }
-          : {
-              comments: {
-                annotation: true,
-                jsdoc: false,
-                legal: true,
-              },
-            }),
       } as const satisfies Rolldown.OutputOptions
     },
     entry: ['./src/index.ts'],
@@ -110,7 +81,6 @@ const tsdownConfig = defineConfig((cliOptions) => {
     format: ['es'],
     hash: false,
     name: packageJson.name,
-    nodeProtocol: true,
     platform: 'node',
     publint: { enabled: false, strict: true },
     report: { enabled: true, gzip: true },
@@ -140,7 +110,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
       },
       format: ['cjs'],
     },
-  ]
+  ] as const satisfies UserConfig[]
 })
 
 export default tsdownConfig

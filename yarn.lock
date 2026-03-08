@@ -1589,7 +1589,7 @@ __metadata:
     "@types/react": "npm:^19.2.14"
     diff: "npm:^8.0.3"
     eslint: "npm:^10.0.3"
-    eslint-plugin-package-json: "npm:^0.89.3"
+    eslint-plugin-package-json: "npm:^0.89.4"
     jiti: "npm:^2.6.1"
     jsonc-eslint-parser: "npm:^3.1.0"
     prettier: "npm:^3.8.1"
@@ -1806,9 +1806,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-package-json@npm:^0.89.3":
-  version: 0.89.3
-  resolution: "eslint-plugin-package-json@npm:0.89.3"
+"eslint-plugin-package-json@npm:^0.89.4":
+  version: 0.89.4
+  resolution: "eslint-plugin-package-json@npm:0.89.4"
   dependencies:
     "@altano/repository-tools": "npm:^2.0.1"
     change-case: "npm:^5.4.4"
@@ -1823,7 +1823,7 @@ __metadata:
   peerDependencies:
     eslint: ">=8.0.0"
     jsonc-eslint-parser: ">=2.0.0"
-  checksum: 10c0/f1b27dcab5af68499747c2ce3e5356289c368e6e79dba98c6a34126244c4555dd792f7ce1f541a8dd34658ee3638c8177bf6f06a528496732c284e3a609601ef
+  checksum: 10c0/dd883e1092f63d6a1f0bb72813a7aa2b6e8d49e60460a9b00bbae56e4a3b4fadec346603ea6f1e506592bdba18333a665214ef8bab0efff3492d68f8bdd700c3
   languageName: node
   linkType: hard
 
@@ -2658,13 +2658,13 @@ __metadata:
   linkType: hard
 
 "package-json-validator@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "package-json-validator@npm:1.0.2"
+  version: 1.1.0
+  resolution: "package-json-validator@npm:1.1.0"
   dependencies:
     semver: "npm:^7.7.2"
     validate-npm-package-license: "npm:^3.0.4"
     validate-npm-package-name: "npm:^7.0.0"
-  checksum: 10c0/130ee4ebd48499bb6a7f41e86e084ebdf0f0bfff3b824c473a5e09f18b0cef7cabbb34f4190f2aa98419baf0c9d82ca8582fe4dc0c4025b0b6afa285f67eabda
+  checksum: 10c0/aa8ce08a43995fa7b74c23f8ceebaf23f031f2d10e620f7a32d1e234f5a2e22a2f1e81e4dd785fe3a86c5bcbfca4c16195b8fb99eca5c163bcbd9cc99a3c8be7
   languageName: node
   linkType: hard
 
@@ -2919,7 +2919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rolldown@npm:^1.0.0-rc.5":
+"rolldown@npm:1.0.0-rc.7, rolldown@npm:^1.0.0-rc.7":
   version: 1.0.0-rc.7
   resolution: "rolldown@npm:1.0.0-rc.7"
   dependencies:

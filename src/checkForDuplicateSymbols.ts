@@ -142,7 +142,7 @@ export const checkForDuplicateSymbols = (
     ) {
       console.info(
         `\n- ${(index + 1).toString()}. Found ${styleText(
-          ['bold', 'cyanBright', 'underline'],
+          ['bold', 'redBright', 'underline'],
           hasDuplicateSymbols.length.toString(),
         )} duplicated symbols in entry:\n${styleText(
           ['underline', 'yellowBright', 'italic', 'bold'],

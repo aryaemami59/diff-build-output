@@ -1,3 +1,4 @@
+import { builtinModules } from 'node:module'
 import type { InlineConfig, Rolldown, UserConfig } from 'tsdown'
 import { defineConfig } from 'tsdown'
 import packageJson from './package.json' with { type: 'json' }
@@ -7,7 +8,7 @@ const external = [
     ...packageJson.dependencies,
     ...packageJson.peerDependencies,
   }),
-  // ...builtinModules,
+  ...builtinModules,
   /^node:/,
 ]
 
@@ -17,7 +18,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
     checks: { circularDependency: true },
     clean: false,
     cwd: import.meta.dirname,
-    deps: { neverBundle: external, onlyAllowBundle: [] },
+    deps: { neverBundle: external, onlyBundle: [] },
     devtools: { clean: true, enabled: true },
     dts: {
       emitJs: false,
@@ -75,7 +76,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
           : {}),
       } as const satisfies Rolldown.OutputOptions
     },
-    entry: ['./src/index.ts'],
+    entry: ['src/index.ts'],
     failOnWarn: true,
     fixedExtension: false,
     format: ['es'],
@@ -84,6 +85,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
     platform: 'node',
     publint: { enabled: false, strict: true },
     report: { enabled: true, gzip: true },
+    root: 'src',
     shims: true,
     sourcemap: true,
     target: ['esnext'],
@@ -106,7 +108,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
       ...commonOptions,
       dts: {
         ...(typeof commonOptions.dts === 'object' ? commonOptions.dts : {}),
-        emitDtsOnly: true,
+        // emitDtsOnly: true,
       },
       format: ['cjs'],
     },

@@ -1,6 +1,6 @@
 import { createTwoFilesPatch } from 'diff'
 import { createWriteStream } from 'node:fs'
-import * as fs from 'node:fs/promises'
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
 import * as process from 'node:process'
 import type { Options } from 'prettier'
@@ -44,16 +44,16 @@ export type GenerateDiffReportsOptions = {
 export async function generateDiffReports(
   generateDiffReportsOptions: GenerateDiffReportsOptions = {},
 ): Promise<void> {
-  await fs.mkdir(OLD_OUTPUT_PATH, {
+  await mkdir(OLD_OUTPUT_PATH, {
     recursive: true,
   })
 
-  await fs.mkdir(NEW_OUTPUT_PATH, {
+  await mkdir(NEW_OUTPUT_PATH, {
     recursive: true,
   })
 
   const oldOutputFilePaths = (
-    await fs.readdir(OLD_OUTPUT_PATH, {
+    await readdir(OLD_OUTPUT_PATH, {
       encoding: 'utf-8',
       recursive: true,
       withFileTypes: true,
@@ -135,7 +135,7 @@ export async function generateDiffReports(
         const parentDir = path.dirname(
           path.join(DIFFS_DIRECTORY, entryFilePath),
         )
-        await fs.mkdir(parentDir, { recursive: true })
+        await mkdir(parentDir, { recursive: true })
 
         const markdownFile = `${filePath}.md`
         const writeStream = createWriteStream(markdownFile, {
@@ -156,15 +156,13 @@ export async function generateDiffReports(
           singleQuote: true,
         } as const satisfies Options
 
-        const nonFormattedOldContent = await fs.readFile(
-          oldOutput.absolutePath,
-          { encoding: 'utf-8' },
-        )
+        const nonFormattedOldContent = await readFile(oldOutput.absolutePath, {
+          encoding: 'utf-8',
+        })
 
-        const nonFormattedNewContent = await fs.readFile(
-          newOutput.absolutePath,
-          { encoding: 'utf-8' },
-        )
+        const nonFormattedNewContent = await readFile(newOutput.absolutePath, {
+          encoding: 'utf-8',
+        })
 
         const oldFileContent = await format(
           nonFormattedOldContent,
@@ -218,11 +216,11 @@ export async function generateDiffReports(
 
         writeStream.write(twoFilesPatch)
 
-        void fs.writeFile(`${filePath}-diff.patch`, twoFilesPatch, {
+        void writeFile(`${filePath}-diff.patch`, twoFilesPatch, {
           encoding: 'utf-8',
         })
 
-        // await fs.writeFile(
+        // await writeFile(
         //   markdownFile,
         //   `${markdownFileBanner}${twoFilesPatch}${markdownFileFooter}`,
         //   { encoding: 'utf-8' },
@@ -359,9 +357,9 @@ export async function generateDiffReports(
     .map(({ content }) => content)
     .join('\n')}`
 
-  await fs.mkdir(path.dirname(all), { recursive: true })
+  await mkdir(path.dirname(all), { recursive: true })
 
-  await fs.writeFile(all, allDiffsContent, { encoding: 'utf-8' })
+  await writeFile(all, allDiffsContent, { encoding: 'utf-8' })
 
   if (process.platform === 'win32') {
     await spawnAsync('bash', ['-lc', `clip.exe < '${all}'`], {

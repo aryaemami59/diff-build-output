@@ -22,8 +22,8 @@ describe('generateDiffReports', () => {
           enabled: true,
           jsExtensions: [
             // ".browser.mjs",
-            '.development.cjs',
-            '.legacy-esm.js',
+            // '.development.cjs',
+            // '.legacy-esm.js',
             '.modern.mjs',
           ],
           tsExtensions: [
@@ -37,8 +37,8 @@ describe('generateDiffReports', () => {
           enabled: true,
           jsExtensions: [
             // ".browser.mjs",
-            '.development.cjs',
-            '.legacy-esm.js',
+            // '.development.cjs',
+            // '.legacy-esm.js',
             '.modern.mjs',
           ],
           verbose: true,

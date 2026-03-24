@@ -74,6 +74,9 @@
     "test": "node --enable-source-maps --test tests/**/*.test.ts",
     "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
   },
+  "resolutions": {
+    "rolldown": "^1.0.0-rc.11"
+  },
   "dependencies": {
     "diff": "^8.0.4"
   },

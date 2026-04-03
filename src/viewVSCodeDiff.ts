@@ -8,7 +8,7 @@ import * as process from 'node:process'
 import type { ContentsInfo } from './checkForDuplicateSymbols.ts'
 import type { DistributedOmit, LiteralUnion, Simplify } from './typeHelpers.ts'
 
-process.setSourceMapsEnabled(true)
+// process.setSourceMapsEnabled(true)
 
 const child_process = process.getBuiltinModule('node:child_process')
 
@@ -42,7 +42,7 @@ export type ViewVSCodeDiffOptions = Simplify<
 export const spawnAsync = (
   ...args: Parameters<typeof child_process.spawn>
 ): Promise<ChildProcess> => {
-  process.setSourceMapsEnabled(true)
+  // process.setSourceMapsEnabled(true)
 
   return new Promise<ChildProcess>((resolve, reject) => {
     const child = child_process.spawn(...args)

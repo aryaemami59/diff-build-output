@@ -1,6 +1,7 @@
 import { builtinModules } from 'node:module'
 import type { InlineConfig, Rolldown, UserConfig } from 'tsdown'
 import { defineConfig } from 'tsdown'
+import ApiSnapshot from 'tsnapi/rolldown'
 import packageJson from './package.json' with { type: 'json' }
 
 const external = [
@@ -103,6 +104,16 @@ const tsdownConfig = defineConfig((cliOptions) => {
   return [
     {
       ...commonOptions,
+      plugins: [
+        ApiSnapshot({
+          extensionDts: '.snapshot.d.ts',
+          extensionRuntime: '.snapshot.js',
+          header: true,
+          omitArgumentNames: false,
+          outputDir: '__snapshots__/tsnapi',
+          // update: true,
+        }),
+      ],
     },
     {
       ...commonOptions,

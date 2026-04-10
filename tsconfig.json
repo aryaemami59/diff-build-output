@@ -10,7 +10,7 @@
     "rewriteRelativeImportExtensions": true,
     "rootDir": "./"
   },
-  "exclude": ["dist", "**/dist/"],
+  "exclude": ["dist", "**/dist/", "__snapshots__"],
   "extends": "@aryaemami59/tsconfig/nodenext/nodenext/with-js",
   "include": ["**/*.*"]
 }

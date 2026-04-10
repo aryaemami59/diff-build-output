@@ -75,7 +75,7 @@
     "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
   },
   "resolutions": {
-    "rolldown": "^1.0.0-rc.13"
+    "rolldown": "^1.0.0-rc.15"
   },
   "dependencies": {
     "diff": "^8.0.4"
@@ -83,28 +83,28 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@arethetypeswrong/core": "^0.18.2",
-    "@aryaemami59/eslint-config": "^0.0.7",
-    "@aryaemami59/prettier-config": "^0.0.7",
-    "@aryaemami59/tsconfig": "^0.0.7",
-    "@aryaemami59/vitest-config": "^0.0.7",
+    "@aryaemami59/eslint-config": "^0.0.8",
+    "@aryaemami59/prettier-config": "^0.0.8",
+    "@aryaemami59/tsconfig": "^0.0.8",
+    "@aryaemami59/vitest-config": "^0.0.8",
     "@reduxjs/toolkit": "^2.11.2",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "eslint": "^10.2.0",
     "eslint-plugin-package-json": "^0.91.1",
     "jiti": "^2.6.1",
     "jsonc-eslint-parser": "^3.1.0",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "publint": "^0.3.18",
-    "react": "^19.2.4",
+    "react": "^19.2.5",
     "react-redux": "^9.2.0",
     "rimraf": "^6.1.3",
-    "rolldown": "^1.0.0-rc.13",
+    "rolldown": "^1.0.0-rc.15",
     "tsdown": "^0.21.7",
     "typescript": "^6.0.2",
     "unplugin-unused": "^0.5.7",
-    "vite": "^8.0.3",
-    "vitest": "^4.1.2"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "peerDependencies": {
     "prettier": ">=3.0.0"

@@ -8,7 +8,8 @@
     "noEmit": true,
     "outDir": "./dist",
     "rewriteRelativeImportExtensions": true,
-    "rootDir": "./"
+    "rootDir": "./",
+    "verbatimModuleSyntax": true
   },
   "exclude": ["dist", "**/dist/", "__snapshots__"],
   "extends": "@aryaemami59/tsconfig/nodenext/nodenext/with-js",

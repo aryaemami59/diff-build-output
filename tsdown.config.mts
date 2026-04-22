@@ -30,6 +30,14 @@ const tsdownConfig = defineConfig((cliOptions) => {
     inputOptions(options) {
       return {
         ...options,
+        transform: {
+          ...options.transform,
+          typescript: {
+            ...options.transform?.typescript,
+            optimizeConstEnums: true,
+            optimizeEnums: true,
+          },
+        },
         experimental: {
           ...options.experimental,
           lazyBarrel: true,

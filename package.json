@@ -75,6 +75,7 @@
     "typecheck": "tsc -p $INIT_CWD/tsconfig.json --noEmit"
   },
   "resolutions": {
+    "fflate": "0.8.2",
     "rolldown": "^1.0.1"
   },
   "dependencies": {

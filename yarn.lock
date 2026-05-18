@@ -2940,7 +2940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rolldown@npm:^1.0.1":
+"rolldown@npm:1.0.1, rolldown@npm:^1.0.0, rolldown@npm:^1.0.1":
   version: 1.0.1
   resolution: "rolldown@npm:1.0.1"
   dependencies:

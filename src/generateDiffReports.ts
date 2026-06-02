@@ -26,13 +26,13 @@ import { spawnAsync, viewVSCodeDiff } from './viewVSCodeDiff.ts'
 export type GenerateDiffReportsOptions = {
   checkForDuplicateSymbolsOptions?: WithEnabled<
     DistributedOmit<
-      CheckForDuplicateSymbolsOptions & { verbose?: boolean },
+      CheckForDuplicateSymbolsOptions,
       'newFileContent' | 'newOutput' | 'oldOutput'
     >
   >
   checkForPureAnnotationsOptions?: WithEnabled<
     DistributedOmit<
-      CheckForPureAnnotationsOptions & { verbose?: boolean },
+      CheckForPureAnnotationsOptions,
       'newFileContent' | 'newOutput' | 'oldOutput'
     >
   >
@@ -306,9 +306,9 @@ export async function generateDiffReports(
               newFileContent: nonFormattedNewContent,
               newOutput,
               oldOutput,
+              verbose: checkForPureAnnotationsOptions.verbose,
             },
             index,
-            checkForPureAnnotationsOptions.verbose ?? false,
           )
         }
 
@@ -316,13 +316,13 @@ export async function generateDiffReports(
           checkForDuplicateSymbols(
             {
               jsExtensions: checkForDuplicateSymbolsOptions.jsExtensions,
-              tsExtensions: checkForDuplicateSymbolsOptions.tsExtensions,
               newFileContent: nonFormattedNewContent,
               newOutput,
               oldOutput,
+              tsExtensions: checkForDuplicateSymbolsOptions.tsExtensions,
+              verbose: checkForDuplicateSymbolsOptions.verbose,
             },
             index,
-            checkForDuplicateSymbolsOptions.verbose ?? false,
           )
         }
 

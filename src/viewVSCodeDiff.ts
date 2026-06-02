@@ -33,6 +33,27 @@ export type ViewVSCodeDiffOptions = Simplify<
      * Excluded file extensions.
      */
     excludedExtensions?: readonly string[]
+
+    /**
+     * The locale to use (e.g. `"en-US"` or `"zh-TW"`).
+     *
+     * @default "en-US"
+     */
+    locale?: string
+
+    /**
+     * Disable GPU hardware acceleration.
+     *
+     * @default false
+     */
+    disableGpu?: boolean
+
+    /**
+     * Disable LCD font rendering.
+     *
+     * @default false
+     */
+    disableLcdText?: boolean
   } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>
 >
 
@@ -61,7 +82,10 @@ export const viewVSCodeDiff = async (
   viewVSCodeDiffOptions: ViewVSCodeDiffOptions,
 ): Promise<ChildProcess | undefined> => {
   const {
+    disableGpu = false,
+    disableLcdText = false,
     includedExtensions = [],
+    locale = 'en-US',
     newOutput,
     oldOutput,
   } = viewVSCodeDiffOptions
@@ -95,7 +119,7 @@ export const viewVSCodeDiff = async (
       [
         '-lc',
         `(
-        code --disable-gpu --disable-lcd-text --diff ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}
+        code ${disableGpu ? '--disable-gpu' : ''} ${disableLcdText ? '--disable-lcd-text' : ''} ${locale ? `--locale "${locale}"` : ''} --diff ${oldOutput.absolutePosixPath} ${newOutput.absolutePosixPath}
         ) &`,
       ] as const,
       { stdio: 'inherit' } as const,

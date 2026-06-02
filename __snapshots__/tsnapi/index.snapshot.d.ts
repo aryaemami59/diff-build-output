@@ -6,23 +6,24 @@ export type CheckForDuplicateSymbolsOptions = Simplify<{
   readonly tsExtensions?: readonly LiteralUnion<`.d.${'c' | '' | 'm'}ts` | 'uncheckedindexed.ts', `${string}.${'c' | '' | 'm'}ts`>[];
   readonly jsExtensions?: readonly LiteralUnion<`.${'c' | '' | 'm'}js` | `${'index' | '.legacy-esm'}.js` | `.${'browser' | 'modern'}.mjs` | `.${'development' | 'production.min'}.cjs`, `${string}.${'c' | '' | 'm'}js`>[];
   readonly newFileContent: string;
+  readonly verbose?: boolean;
 } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>>;
 export type CheckForPureAnnotationsOptions = Simplify<{
   readonly jsExtensions?: readonly LiteralUnion<`.${'c' | '' | 'm'}js` | `${'index' | '.legacy-esm'}.js` | `.${'browser' | 'modern'}.mjs` | `.${'development' | 'production.min'}.cjs`, `${string}.${'c' | '' | 'm'}js`>[];
   readonly newFileContent: string;
+  readonly verbose?: boolean;
 } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>>;
 export type GenerateDiffReportsOptions = {
-  checkForDuplicateSymbolsOptions?: WithEnabled<DistributedOmit<CheckForDuplicateSymbolsOptions & {
-    verbose?: boolean;
-  }, 'newFileContent' | 'newOutput' | 'oldOutput'>>;
-  checkForPureAnnotationsOptions?: WithEnabled<DistributedOmit<CheckForPureAnnotationsOptions & {
-    verbose?: boolean;
-  }, 'newFileContent' | 'newOutput' | 'oldOutput'>>;
+  checkForDuplicateSymbolsOptions?: WithEnabled<DistributedOmit<CheckForDuplicateSymbolsOptions, 'newFileContent' | 'newOutput' | 'oldOutput'>>;
+  checkForPureAnnotationsOptions?: WithEnabled<DistributedOmit<CheckForPureAnnotationsOptions, 'newFileContent' | 'newOutput' | 'oldOutput'>>;
   viewVSCodeDiffOptions?: WithEnabled<DistributedOmit<ViewVSCodeDiffOptions, 'newOutput' | 'oldOutput'>>;
 };
 export type ViewVSCodeDiffOptions = Simplify<{
   includedExtensions?: readonly LiteralUnion<`.${'c' | '' | 'm'}js` | `${'index' | '.legacy-esm'}.js` | `.${'browser' | 'modern'}.mjs` | `.${'development' | 'production.min'}.cjs` | `.d.${'c' | '' | 'm'}ts` | 'uncheckedindexed.ts', string>[];
   excludedExtensions?: readonly string[];
+  locale?: string;
+  disableGpu?: boolean;
+  disableLcdText?: boolean;
 } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>>;
 // #endregion
 
@@ -31,7 +32,7 @@ export declare function generateDiffReports(generateDiffReportsOptions?: Generat
 // #endregion
 
 // #region Variables
-export declare const checkForDuplicateSymbols: (checkForDuplicateSymbolsOptions: CheckForDuplicateSymbolsOptions, index: number, verbose?: boolean) => void;
-export declare const checkForPureAnnotations: (checkForPureAnnotationsOptions: CheckForPureAnnotationsOptions, index: number, verbose?: boolean) => void;
+export declare const checkForDuplicateSymbols: (checkForDuplicateSymbolsOptions: CheckForDuplicateSymbolsOptions, index: number) => void;
+export declare const checkForPureAnnotations: (checkForPureAnnotationsOptions: CheckForPureAnnotationsOptions, index: number) => void;
 export declare const viewVSCodeDiff: (viewVSCodeDiffOptions: ViewVSCodeDiffOptions) => Promise<ChildProcess | undefined>;
 // #endregion

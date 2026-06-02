@@ -81,16 +81,27 @@ export type CheckForDuplicateSymbolsOptions = Simplify<
      * The content of the new file to check for duplicate symbols.
      */
     readonly newFileContent: string
+
+    /**
+     * Whether to log the locations of the duplicated symbols in the new output
+     * file.
+     *
+     * @default false
+     */
+    readonly verbose?: boolean
   } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>
 >
 
 export const checkForDuplicateSymbols = (
   checkForDuplicateSymbolsOptions: CheckForDuplicateSymbolsOptions,
   index: number,
-  verbose = false,
 ): void => {
-  const { newFileContent, oldOutput, newOutput } =
-    checkForDuplicateSymbolsOptions
+  const {
+    newFileContent,
+    oldOutput,
+    newOutput,
+    verbose = false,
+  } = checkForDuplicateSymbolsOptions
 
   const jsExtensions = checkForDuplicateSymbolsOptions.jsExtensions?.length
     ? checkForDuplicateSymbolsOptions.jsExtensions
@@ -108,7 +119,7 @@ export const checkForDuplicateSymbols = (
         '.d.ts',
       ] as const satisfies CheckForDuplicateSymbolsOptions['tsExtensions'])
 
-  const allMatches = [...newFileContent.matchAll(/\w+\$1\b/gim)]
+  const allMatches = [...newFileContent.matchAll(/\w+[$]\d\b/gim)]
 
   const hasDuplicateSymbols =
     allMatches.length > 0

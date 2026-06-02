@@ -33,16 +33,27 @@ export type CheckForPureAnnotationsOptions = Simplify<
      * The content of the new file.
      */
     readonly newFileContent: string
+
+    /**
+     * Whether to log the locations of the duplicated symbols in the new output
+     * file.
+     *
+     * @default false
+     */
+    readonly verbose?: boolean
   } & DistributedOmit<ContentsInfo, 'relativePath' | 'relativePosixPath'>
 >
 
 export const checkForPureAnnotations = (
   checkForPureAnnotationsOptions: CheckForPureAnnotationsOptions,
   index: number,
-  verbose = false,
 ): void => {
-  const { newFileContent, newOutput, oldOutput } =
-    checkForPureAnnotationsOptions
+  const {
+    newFileContent,
+    newOutput,
+    oldOutput,
+    verbose = false,
+  } = checkForPureAnnotationsOptions
 
   const jsExtensions = checkForPureAnnotationsOptions.jsExtensions?.length
     ? checkForPureAnnotationsOptions.jsExtensions
@@ -55,19 +66,29 @@ export const checkForPureAnnotations = (
   if (
     jsExtensions.some((extension) => oldOutput.absolutePath.endsWith(extension))
   ) {
-    const allMatches = [
-      ...newFileContent.matchAll(/\/\*\s?([@#]__PURE__)\s?\*\//gim),
-    ]
+    const allMatchesRegExpIterator = newFileContent.matchAll(
+      /\/\*\s?([@#]__PURE__)\s?\*\//gu,
+    )
+
+    const allMatches = [...allMatchesRegExpIterator]
 
     const pureAnnotationMatches =
       allMatches.length > 0
-        ? allMatches.map((symbolMatch) => symbolMatch[1])
+        ? allMatches
+            .map((symbolMatch) => symbolMatch[1])
+            .filter((symbolMatch) => symbolMatch != null)
         : null
 
     if (pureAnnotationMatches) {
-      const pureAnnotations = Array.from(pureAnnotationMatches).map(
-        (pureAnnotationMatch) => pureAnnotationMatch[0],
-      )
+      const pureAnnotations = Array.from(pureAnnotationMatches)
+        .map((pureAnnotationMatch) => pureAnnotationMatch[0])
+        .filter((pureAnnotationMatch) => pureAnnotationMatch != null)
+
+      const firstPureAnnotationMatch = pureAnnotationMatches[0]
+
+      if (firstPureAnnotationMatch == null) {
+        return
+      }
 
       console.info(
         `\n- ${(index + 1).toString()}. Found ${styleText(
@@ -75,7 +96,7 @@ export const checkForPureAnnotations = (
           pureAnnotations.length.toString(),
         )} ${styleText(
           ['bold', 'bgWhite', 'whiteBright'] as const,
-          pureAnnotationMatches[0],
+          firstPureAnnotationMatch,
         )} annotations in entry:\n${styleText(
           ['underline', 'yellowBright', 'italic', 'bold'] as const,
           newOutput.absolutePosixPath,
@@ -101,7 +122,7 @@ export const checkForPureAnnotations = (
 
           const matchedSymbol = styleText(
             ['bold', 'bgMagenta'] as const,
-            pureAnnotationMatches[0],
+            firstPureAnnotationMatch,
             // '@__PURE__',
           )
 

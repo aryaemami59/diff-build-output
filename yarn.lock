@@ -972,7 +972,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^19.2.15":
+"@types/react@npm:^19.2.16":
   version: 19.2.16
   resolution: "@types/react@npm:19.2.16"
   dependencies:
@@ -1535,15 +1535,15 @@ __metadata:
     "@aryaemami59/vitest-config": "npm:^0.0.8"
     "@reduxjs/toolkit": "npm:^2.12.0"
     "@types/node": "npm:^25.9.1"
-    "@types/react": "npm:^19.2.15"
+    "@types/react": "npm:^19.2.16"
     diff: "npm:^9.0.0"
     eslint: "npm:^10.4.1"
-    eslint-plugin-package-json: "npm:^1.2.0"
+    eslint-plugin-package-json: "npm:^1.3.0"
     jiti: "npm:^2.7.0"
     jsonc-eslint-parser: "npm:^3.1.0"
     prettier: "npm:^3.8.3"
     publint: "npm:^0.3.21"
-    react: "npm:^19.2.6"
+    react: "npm:^19.2.7"
     react-redux: "npm:^9.3.0"
     rimraf: "npm:^6.1.3"
     rolldown: "npm:^1.0.3"
@@ -1553,8 +1553,8 @@ __metadata:
     typescript: "npm:^6.0.3"
     unplugin-unused: "npm:^0.5.7"
     unrun: "npm:^0.3.0"
-    vite: "npm:^8.0.14"
-    vitest: "npm:^4.1.7"
+    vite: "npm:^8.0.16"
+    vitest: "npm:^4.1.8"
   peerDependencies:
     prettier: ">=3.0.0"
   peerDependenciesMeta:
@@ -1773,7 +1773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-package-json@npm:^1.2.0":
+"eslint-plugin-package-json@npm:^1.3.0":
   version: 1.3.0
   resolution: "eslint-plugin-package-json@npm:1.3.0"
   dependencies:
@@ -2862,7 +2862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^19.2.6":
+"react@npm:^19.2.7":
   version: 19.2.7
   resolution: "react@npm:19.2.7"
   checksum: 10c0/0bd0e2f1bbd4ba97561c6597bf8a5fec05e6476fe61e165c1065598d16668efc6715205599c94d3ddd49d36cb0f21cbf1b9bcc18ee840b805ce222c3e8d558ac
@@ -3554,7 +3554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.0.0 || ^7.0.0 || ^8.0.0, vite@npm:^8.0.14":
+"vite@npm:^6.0.0 || ^7.0.0 || ^8.0.0, vite@npm:^8.0.16":
   version: 8.0.16
   resolution: "vite@npm:8.0.16"
   dependencies:
@@ -3611,7 +3611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^4.1.7":
+"vitest@npm:^4.1.8":
   version: 4.1.8
   resolution: "vitest@npm:4.1.8"
   dependencies:

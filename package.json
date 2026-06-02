@@ -86,14 +86,14 @@
     "@aryaemami59/vitest-config": "^0.0.8",
     "@reduxjs/toolkit": "^2.12.0",
     "@types/node": "^25.9.1",
-    "@types/react": "^19.2.15",
+    "@types/react": "^19.2.16",
     "eslint": "^10.4.1",
-    "eslint-plugin-package-json": "^1.2.0",
+    "eslint-plugin-package-json": "^1.3.0",
     "jiti": "^2.7.0",
     "jsonc-eslint-parser": "^3.1.0",
     "prettier": "^3.8.3",
     "publint": "^0.3.21",
-    "react": "^19.2.6",
+    "react": "^19.2.7",
     "react-redux": "^9.3.0",
     "rimraf": "^6.1.3",
     "rolldown": "^1.0.3",
@@ -103,8 +103,8 @@
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.5.7",
     "unrun": "^0.3.0",
-    "vite": "^8.0.14",
-    "vitest": "^4.1.7"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
   },
   "peerDependencies": {
     "prettier": ">=3.0.0"

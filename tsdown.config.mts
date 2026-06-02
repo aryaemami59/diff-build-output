@@ -19,17 +19,27 @@ const tsdownConfig = defineConfig((cliOptions) => {
     checks: { circularDependency: true },
     clean: false,
     cwd: import.meta.dirname,
-    deps: { neverBundle: external, onlyBundle: [] },
+    deps: {
+      dts: { neverBundle: external },
+      neverBundle: external,
+      onlyBundle: [],
+    },
     devtools: { clean: true, enabled: true },
     dts: {
       emitJs: false,
       enabled: true,
       oxc: false,
       resolver: 'tsc',
+      sourcemap: true,
     },
     inputOptions(options) {
       return {
         ...options,
+        experimental: {
+          ...options.experimental,
+          lazyBarrel: true,
+          nativeMagicString: true,
+        },
         transform: {
           ...options.transform,
           typescript: {
@@ -37,11 +47,6 @@ const tsdownConfig = defineConfig((cliOptions) => {
             optimizeConstEnums: true,
             optimizeEnums: true,
           },
-        },
-        experimental: {
-          ...options.experimental,
-          lazyBarrel: true,
-          nativeMagicString: true,
         },
       } as const satisfies Rolldown.InputOptions
     },
@@ -57,6 +62,7 @@ const tsdownConfig = defineConfig((cliOptions) => {
           legal: true,
         },
         strict: true,
+        // minify: { codegen: { legalComments: 'external' } },
         // plugins: [
         //   {
         //     name: 'remove-cjs-outputs-from-dts-builds',

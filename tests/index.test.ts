@@ -44,6 +44,8 @@ describe('generateDiffReports', () => {
           verbose: true,
         },
         viewVSCodeDiffOptions: {
+          disableGpu: true,
+          disableLcdText: true,
           enabled: true,
           // TODO: Figure out how to pass these options through CLI.
           includedExtensions: [
@@ -61,6 +63,7 @@ describe('generateDiffReports', () => {
             // 'index.js',
             // 'uncheckedindexed.ts',
           ],
+          locale: 'en-US',
         },
       })
     })

@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
   cancel-in-progress: true
+  group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
 
 jobs:
   check-lint-and-formatting:
@@ -27,10 +27,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           cache-dependency-path: yarn.lock
           cache: yarn
@@ -66,15 +66,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: ${{ matrix.node-version }}
           cache-dependency-path: yarn.lock
           cache: yarn
           check-latest: true
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: yarn install
@@ -101,15 +101,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: ${{ matrix.node-version }}
           cache-dependency-path: yarn.lock
           cache: yarn
           check-latest: true
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: yarn install
@@ -120,7 +120,7 @@ jobs:
         run: yarn pack
 
       - name: Upload artifact with Node.js ${{ matrix.node-version }} on ${{ matrix.runs-on }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         id: artifact-upload-step
         with:
           name: ${{ matrix.node-version }}-${{ matrix.runs-on }}
@@ -144,15 +144,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: ${{ matrix.node-version }}
           cache-dependency-path: yarn.lock
           cache: yarn
           check-latest: true
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: yarn install
@@ -161,7 +161,7 @@ jobs:
         run: yarn run build
 
       - name: Download build artifact with Node.js ${{ matrix.node-version }} on ${{ matrix.runs-on }}
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.node-version }}-${{ matrix.runs-on }}
           path: ./
@@ -192,10 +192,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           cache-dependency-path: yarn.lock
           cache: yarn
@@ -206,7 +206,7 @@ jobs:
         run: yarn install
 
       - name: Download build artifact with Node.js ${{ matrix.node-version }} on ${{ matrix.runs-on }}
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.node-version }}-${{ matrix.runs-on }}
           path: ./
@@ -232,21 +232,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup Node.js ${{ matrix.node-version }} and Install dependencies on ${{ matrix.runs-on }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: ${{ matrix.node-version }}
           cache-dependency-path: yarn.lock
           cache: yarn
           check-latest: true
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: yarn install
 
       - name: Download build artifact with Node.js ${{ matrix.node-version }} on ${{ matrix.runs-on }}
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.node-version }}-${{ matrix.runs-on }}
           path: ./

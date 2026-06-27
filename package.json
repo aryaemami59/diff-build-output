@@ -64,7 +64,7 @@
     "dist/"
   ],
   "scripts": {
-    "build": "yarn run clean && tsdown --config-loader='tsx' --config=$INIT_CWD/tsdown.config.mts",
+    "build": "yarn run clean && tsdown --config-loader=unrun --config=$INIT_CWD/tsdown.config.mts",
     "clean": "rimraf diffs/ dist/ .rolldown/ temp/",
     "format": "prettier --ignore-path=$PROJECT_CWD/.gitignore --ignore-path=$PROJECT_CWD/.prettierignore --config=$PROJECT_CWD/prettier.config.mts --write $INIT_CWD",
     "format-check": "prettier --ignore-path=$PROJECT_CWD/.gitignore --ignore-path=$PROJECT_CWD/.prettierignore --config=$PROJECT_CWD/prettier.config.mts --check $INIT_CWD",
@@ -78,34 +78,34 @@
     "diff": "^9.0.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.3",
-    "@arethetypeswrong/core": "^0.18.3",
+    "@arethetypeswrong/cli": "^0.18.4",
+    "@arethetypeswrong/core": "^0.18.4",
     "@aryaemami59/eslint-config": "^0.0.8",
     "@aryaemami59/prettier-config": "^0.0.8",
     "@aryaemami59/tsconfig": "^0.0.8",
     "@aryaemami59/vitest-config": "^0.0.8",
     "@reduxjs/toolkit": "https://pkg.pr.new/@reduxjs/toolkit@62d21b0.tgz",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.17",
-    "eslint": "^10.5.0",
-    "eslint-plugin-package-json": "^1.3.0",
+    "eslint": "^10.6.0",
+    "eslint-plugin-package-json": "^1.5.0",
     "jiti": "^2.7.0",
     "jsonc-eslint-parser": "^3.1.0",
-    "prettier": "^3.8.4",
+    "prettier": "^3.8.5",
     "publint": "^0.3.21",
     "react": "^19.2.7",
     "react-redux": "^9.3.0",
     "redux": "https://pkg.pr.new/redux@28d433b.tgz",
     "rimraf": "^6.1.3",
-    "rolldown": "^1.1.1",
-    "tsdown": "^0.22.2",
+    "rolldown": "^1.1.3",
+    "tsdown": "^0.22.3",
     "tsnapi": "^0.3.3",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.5.7",
     "unrun": "^0.3.1",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.8"
+    "vite": "^8.1.0",
+    "vitest": "^4.1.9"
   },
   "peerDependencies": {
     "prettier": ">=3.0.0"

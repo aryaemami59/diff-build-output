@@ -244,18 +244,10 @@ export type SetOptional<
   : never
 
 export type Primitive =
-  | null
-  | undefined
-  | string
-  | number
-  | boolean
-  | symbol
-  | bigint
+  null | undefined | string | number | boolean | symbol | bigint
 
 export type LiteralUnion<LiteralType, BaseType extends Primitive> =
-  | LiteralType
-  | (BaseType & Record<never, never>)
+  LiteralType | (BaseType & Record<never, never>)
 
 export type LiteralStringUnion<LiteralType, BaseType extends string = string> =
-  | LiteralType
-  | (BaseType & Record<never, never>)
+  LiteralType | (BaseType & Record<never, never>)

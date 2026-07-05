@@ -4,7 +4,6 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
 import * as process from 'node:process'
 import type { Options } from 'prettier'
-import { format, getFileInfo } from 'prettier'
 import type {
   CheckForDuplicateSymbolsOptions,
   ContentsInfo,
@@ -121,6 +120,8 @@ export async function generateDiffReports(
       includedExtensions: process.argv.slice(2),
     },
   } = generateDiffReportsOptions
+
+  const { getFileInfo, format } = await import('prettier')
 
   const markdownDiffEntries = await Promise.all(
     Object.entries(contentsMap).map(

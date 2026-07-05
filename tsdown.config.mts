@@ -1,5 +1,5 @@
 import { builtinModules } from 'node:module'
-import type { InlineConfig, Rolldown, UserConfig } from 'tsdown'
+import type { InlineConfig, Rolldown, UserConfig, UserConfigFn } from 'tsdown'
 import { defineConfig } from 'tsdown'
 import ApiSnapshot from 'tsnapi/rolldown'
 import packageJson from './package.json' with { type: 'json' }
@@ -13,10 +13,11 @@ const external = [
   /^node:/,
 ]
 
-const tsdownConfig = defineConfig((cliOptions) => {
+const tsdownConfig: UserConfigFn = defineConfig((cliOptions) => {
   const commonOptions = {
     attw: { enabled: false, level: 'error' },
     checks: { circularDependency: true },
+    cjsDefault: false,
     clean: false,
     cwd: import.meta.dirname,
     deps: {
@@ -26,11 +27,26 @@ const tsdownConfig = defineConfig((cliOptions) => {
     },
     devtools: { clean: true, enabled: true },
     dts: {
+      build: false,
+      cjsDefault: false,
+      cjsReexport: false,
+      cwd: import.meta.dirname,
+      dtsInput: false,
+      eager: false,
+      emitDtsOnly: false,
       emitJs: false,
       enabled: true,
+      incremental: false,
+      newContext: false,
       oxc: false,
+      parallel: false,
       resolver: 'tsc',
+      sideEffects: false,
       sourcemap: true,
+      tsconfig: 'tsconfig.build.json',
+      tsgo: false,
+      tsMacro: false,
+      vue: false,
     },
     inputOptions(options) {
       return {
@@ -61,7 +77,6 @@ const tsdownConfig = defineConfig((cliOptions) => {
           jsdoc: true,
           legal: true,
         },
-        strict: true,
         // minify: { codegen: { legalComments: 'external' } },
         // plugins: [
         //   {
@@ -89,12 +104,13 @@ const tsdownConfig = defineConfig((cliOptions) => {
               externalLiveBindings: false,
             }
           : {}),
+        strict: true,
       } as const satisfies Rolldown.OutputOptions
     },
     entry: ['src/index.ts'],
     failOnWarn: true,
     fixedExtension: false,
-    format: ['es'],
+    format: ['esm'],
     hash: false,
     name: packageJson.name,
     platform: 'node',
@@ -120,11 +136,13 @@ const tsdownConfig = defineConfig((cliOptions) => {
       ...commonOptions,
       plugins: [
         ApiSnapshot({
+          categorizedExports: true,
           extensionDts: '.snapshot.d.ts',
           extensionRuntime: '.snapshot.js',
           header: true,
           omitArgumentNames: false,
           outputDir: '__snapshots__/tsnapi',
+          typeWidening: true,
           // update: true,
         }),
       ],

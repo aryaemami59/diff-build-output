@@ -12,7 +12,7 @@
     "rootDir": "./",
     "verbatimModuleSyntax": true
   },
-  "exclude": ["dist", "**/dist/", "__snapshots__", "build/"],
+  "exclude": ["dist", "**/dist/", "__snapshots__/", "build/"],
   "extends": "@aryaemami59/tsconfig/nodenext/nodenext/with-js",
   "include": ["**/*.*"]
 }

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": false,
     "checkJs": false,
-    "emitDeclarationOnly": true,
     "noEmit": false,
     "rootDir": "./src"
   },

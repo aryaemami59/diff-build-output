@@ -1,3 +1,4 @@
+import type * as childProcess from 'node:child_process'
 import type { ChildProcess } from 'node:child_process'
 /*
 TODO: Investigate why `import { spawn } from 'node:child_process'` cause `index.d.ts` to be different from `index.d.cts`.
@@ -10,7 +11,8 @@ import type { DistributedOmit, LiteralUnion, Simplify } from './typeHelpers.ts'
 
 // process.setSourceMapsEnabled(true)
 
-const child_process = process.getBuiltinModule('node:child_process')
+const child_process: typeof childProcess =
+  process.getBuiltinModule('node:child_process')
 
 export type ViewVSCodeDiffOptions = Simplify<
   {

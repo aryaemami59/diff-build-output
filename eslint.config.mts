@@ -1,9 +1,10 @@
+import type { Config } from '@aryaemami59/eslint-config'
 import { createESLintConfig, tseslintConfigs } from '@aryaemami59/eslint-config'
 import type { PackageJsonPluginSettings } from 'eslint-plugin-package-json'
 import packageJsonEslintPlugin from 'eslint-plugin-package-json'
 import packageJson from './package.json' with { type: 'json' }
 
-const eslintConfig = createESLintConfig([
+const eslintConfig: Config[] = createESLintConfig([
   {
     extends: [
       tseslintConfigs.strictTypeChecked,

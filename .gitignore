@@ -38,3 +38,7 @@ tsconfig*.vitest-temp.json
 tsconfig*.tsbuildinfo
 .docusaurus/
 .rolldown/
+.claude/*.local.json
+.claude/**/*.log
+.claude/settings.local.json
+CLAUDE.local.md

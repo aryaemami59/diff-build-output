@@ -66,7 +66,7 @@ const tsdownConfig: UserConfigFn = defineConfig((cliOptions) => {
         },
       } as const satisfies Rolldown.InputOptions
     },
-    minify: false,
+    minify: 'dce-only',
     nodeProtocol: true,
     outputOptions(options, format, context) {
       return {
